@@ -1,0 +1,56 @@
+@startuml "Triptop Reisboeken - Dynamisch Container Diagram"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Dynamic.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Dynamisch Container diagram voor Triptop Reis Boekingsproces
+
+Person(reiziger, "Reiziger", "Een persoon die een vakantiereis wil plannen en boeken")
+
+System_Boundary(triptopSysteem, "Triptop Applicatie") {
+    Container(webApp, "Web Applicatie", "HTML, CSS, JavaScript", "Stelt gebruikers in staat om reizen samen te stellen en te boeken")
+
+    Container(apiGateway, "API Gateway", "?", "Routeert API-verzoeken naar de juiste microservices")
+
+    Container(identityProvider, "Identity Provider", "Authentication Service", "Beheert authenticatie en autorisatie")
+
+    Container(tripService, "Reis Service", "Trip Management", "Beheert de samenstelling en status van de reis")
+
+    Container(accommodationAdapter, "Accommodatie Adapter", "Service Adapter", "Integreert met externe accommodatiediensten")
+    Container(activityAdapter, "Activiteiten Adapter", "Service Adapter", "Integreert met externe activiteitendiensten")
+    Container(paymentService, "Betalings Service", "Payment Processor", "Verwerkt betalingen voor boekingen")
+
+    ContainerDb(database, "Database", "?", "Slaat reisgegevens en boekingsinformatie op")
+}
+
+System_Ext(bookingExternal, "Accommodatiediensten", "Booking.com, Airbnb, etc.")
+System_Ext(activityExternal, "Activiteitendiensten", "GetYourGuide, Tripadvisor, etc.")
+System_Ext(paymentExternal, "Betalingsverwerkers", "iDEAL, PayPal, Creditcard, etc.")
+
+' Dynamische interacties voor het boekingsproces
+RelIndex(1, reiziger, webApp, "1. Stelt reis samen met bouwstenen", "HTTPS")
+RelIndex(2, webApp, apiGateway, "2. Verzoekt beschikbaarheid en prijzen", "JSON/HTTPS")
+RelIndex(3, apiGateway, tripService, "3. Creëert conceptreis", "JSON/HTTPS")
+
+RelIndex(4, tripService, accommodationAdapter, "4a. Controleert beschikbaarheid accommodatie", "JSON/HTTPS")
+RelIndex(4, tripService, activityAdapter, "4c. Controleert beschikbaarheid activiteiten", "JSON/HTTPS")
+
+RelIndex(5, accommodationAdapter, bookingExternal, "5a. Raadpleegt externe accommodatiedienst", "API")
+RelIndex(5, activityAdapter, activityExternal, "5c. Raadpleegt externe activiteitendienst", "API")
+
+RelIndex(6, tripService, database, "6. Slaat conceptreis op", "Database Query")
+RelIndex(7, tripService, apiGateway, "7. Stuurt reisvoorstel met prijzen", "JSON/HTTPS")
+RelIndex(8, apiGateway, webApp, "8. Toont reisvoorstel aan gebruiker", "JSON/HTTPS")
+RelIndex(9, webApp, reiziger, "9. Presenteert reisopties en totaalprijs", "HTML/UI")
+
+RelIndex(10, reiziger, webApp, "10. Bevestigt boeking", "HTTPS")
+RelIndex(11, webApp, apiGateway, "11. Stuurt boekingsverzoek", "JSON/HTTPS")
+RelIndex(15, paymentService, paymentExternal, "15. Verwerkt betaling", "API")
+
+RelIndex(19, tripService, database, "19. Slaat definitieve reisgegevens op", "Database Query")
+RelIndex(20, tripService, apiGateway, "20. Stuurt boekingsbevestiging", "JSON/HTTPS")
+RelIndex(21, apiGateway, webApp, "21. Toont boekingsbevestiging", "JSON/HTTPS")
+RelIndex(22, webApp, reiziger, "22. Presenteert boekingsbevestiging", "HTML/UI")
+
+@enduml

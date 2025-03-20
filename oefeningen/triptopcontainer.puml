@@ -1,0 +1,44 @@
+@startuml "Triptop - Context Diagram"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title Context diagram voor het Triptop systeem
+
+Person(reiziger, "Reiziger", "Een persoon die een vakantiereis wil plannen en boeken")
+'Person(Admin, "Beheerder")
+
+System_Boundary(TripApp, "Triptop Applicatie") {
+'System(triptopSysteem, "Triptop Applicatie", "Stelt reizigers in staat om hun vakantiereis te plannen, boeken, wijzigen en betalen met behulp van verschillende bouwstenen")
+System(webApp, "Web Applicatie", "Biedt een gebruikersinterface voor klanten", [React.js])
+'System(mobileApp, "Mobiele Applicatie", "Biedt een mobiele gebruikersinterface voor klanten", [React.js])
+System(backend, "Backend", "descr", "Spring Boot")
+System(APIGateway, "API Gateway", "descr", "Node.js")
+SystemDb(DB, "Database", "Slaat gegevens op", "MySql ")
+}
+
+System_Ext(identityProviders, "Identity Providers", "Externe authenticatiediensten zoals Google, Microsoft, AirBnB")
+System_Ext(accommodatieDiensten, "Accommodatiediensten", "Booking.com, Airbnb")
+System_Ext(vervoerDiensten, "Vervoersdiensten", "NS, RyanAir ")
+System_Ext(autoverhuurDiensten, "Autoverhuurdiensten", "Sixt, Hertz, etc.")
+System_Ext(activiteitenDiensten, "Activiteitendiensten", "Tripadvisor")
+System_Ext(voedselDiensten, "Eet- en drinkdiensten", "Takeaway, Eet.nu, etc.")
+System_Ext(betalingsDiensten, "Betalingsdiensten", "Paypal")
+System_Ext(routeplanningDiensten, "Routeplanningdiensten", "Google Maps, etc.")
+
+'////////////////////////////////////////////////////////////////////////////////////////
+
+Rel(reiziger, webApp, "Plant reizen, boekt diensten, doet betalingen")
+'Rel(reiziger, mobileApp, "Plant reizen, boekt diensten, doet betalingen")
+Rel(webApp, APIGateway, "Maakt API verzoeken")
+Rel(APIGateway, "backend", "Stuurt verzoeken door")
+
+
+Rel(backend, identityProviders, "Authenticatie van gebruikers", "OAuth/OIDC")
+Rel(backend, accommodatieDiensten, "Boekt en beheert accommodaties", "APIs")
+Rel(backend, vervoerDiensten, "Boekt en beheert vervoer", "APIs")
+Rel(backend, autoverhuurDiensten, "Boekt en beheert huurauto's", "APIs")
+Rel(backend, activiteitenDiensten, "Boekt en beheert activiteiten/excursies", "APIs")
+Rel(backend, voedselDiensten, "Boekt en beheert eetgelegenheden", "APIs")
+Rel(backend, betalingsDiensten, "Verwerkt betalingen", "APIs")
+Rel(backend, routeplanningDiensten, "Plant routes tussen locaties", "APIs")
+Rel(backend, DB, "Leest en schrijft data in")
+@enduml
