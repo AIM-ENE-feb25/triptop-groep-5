@@ -1,6 +1,9 @@
 @startuml "Triptop - Context Diagram"
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 
+LAYOUT_WITH_LEGEND()
+left to right direction
+
 title Context diagram voor het Triptop systeem
 
 Person(reiziger, "Reiziger", "Een persoon die een vakantiereis wil plannen en boeken")
@@ -14,6 +17,8 @@ System(backend, "Backend", "descr", "Spring Boot")
 System(APIGateway, "API Gateway", "descr", "Node.js")
 SystemDb(DB, "Database", "Slaat gegevens op", "MySql ")
 }
+
+
 
 System_Ext(identityProviders, "Identity Providers", "Externe authenticatiediensten zoals Google, Microsoft, AirBnB")
 System_Ext(accommodatieDiensten, "Accommodatiediensten", "Booking.com, Airbnb")
