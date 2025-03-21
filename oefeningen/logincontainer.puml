@@ -9,30 +9,30 @@ title Dynamisch Container diagram voor Triptop Login functionaliteit
 Person(reiziger, "Reiziger", "Een persoon die een vakantiereis wil plannen en boeken")
 
 System_Boundary(triptopSysteem, "Triptop Applicatie") {
-    Container(webApp, "Web Applicatie", "HTML, CSS, JavaScript", "Stelt gebruikers in staat om in te loggen en hun reizen te beheren via de browser")
+    Container(webApp, "Web Applicatie", "?", "Stelt gebruikers in staat om in te loggen en hun reizen te beheren via de browser")
 
-    Container(apiGateway, "API Gateway", "?", "Routeert API-verzoeken naar de juiste microservices")
+    Container(apiGateway, "API Gateway", "?", "Routeert API-verzoeken naar de juiste services")
 
-    Container(identityProvider, "Identity Provider", "Spring Boot, Java", "Beheert gebruikersauthenticatie en autorisatie via externe identity providers")
+    Container(identityProvider, "Identity Provider", "?", "Beheert gebruikersauthenticatie en autorisatie via externe identity providers")
 
     ContainerDb(Db, "Database", "?", "Slaat gebruikersgegevens op")
 }
 
-System_Ext(googleIdentity, "Google Identity", "Google OAuth 2.0 Service")
 System_Ext(microsoftIdentity, "Microsoft Identity", "Microsoft Azure AD Service")
 System_Ext(airbnbIdentity, "AirBnB Identity", "AirBnB OAuth Service")
+System_Ext(googleIdentity, "Google Identity", "Google OAuth 2.0 Service")
 
 ' Dynamische interacties met nummering om de volgorde aan te geven
-RelIndex(1, reiziger, webApp, "Bezoekt en klikt op inloggen", "HTTPS")
-RelIndex(2, webApp, apiGateway, "Stuurt authenticatieverzoek", "JSON/HTTPS")
-RelIndex(3, apiGateway, identityProvider, "Routeert authenticatieverzoek", "JSON/HTTPS")
-RelIndex(4, identityProvider, googleIdentity, "Authenticeert via (indien gekozen)", "OAuth 2.0/HTTPS")
-RelIndex(4, identityProvider, microsoftIdentity, "Authenticeert via (indien gekozen)", "OAuth 2.0/HTTPS")
-RelIndex(4, identityProvider, airbnbIdentity, "Authenticeert via (indien gekozen)", "OAuth 2.0/HTTPS")
-RelIndex(5, googleIdentity, reiziger, "Toont login scherm en valideert", "HTTPS")
-RelIndex(6, identityProvider, Db, "Controleert of gebruiker bestaat/slaat gegevens op", "Database Query")
-RelIndex(7, identityProvider, apiGateway, "Genereert en stuurt JWT token", "JSON/HTTPS")
-RelIndex(8, apiGateway, webApp, "Stuurt authenticatieresultaat met token", "JSON/HTTPS")
-RelIndex(9, webApp, reiziger, "Toont ingelogde interface", "HTML/UI")
+RelIndex(1, reiziger, webApp, "Bezoekt en klikt op inloggen")
+RelIndex(2, webApp, apiGateway, "Stuurt authenticatieverzoek")
+RelIndex(3, apiGateway, identityProvider, "Routeert authenticatieverzoek")
+RelIndex(4a, identityProvider, googleIdentity, "Authenticeert via (indien gekozen)")
+RelIndex(4b, identityProvider, microsoftIdentity, "Authenticeert via (indien gekozen)")
+RelIndex(4c, identityProvider, airbnbIdentity, "Authenticeert via (indien gekozen)")
+RelIndex(5, googleIdentity, reiziger, "Toont login scherm en valideert")
+RelIndex(6, identityProvider, Db, "Controleert of gebruiker bestaat/slaat gegevens op")
+RelIndex(7, identityProvider, apiGateway, "Genereert en stuurt JWT token")
+RelIndex(8, apiGateway, webApp, "Stuurt authenticatieresultaat met token")
+RelIndex(9, webApp, reiziger, "Toont ingelogde interface")
 
 @enduml
