@@ -4,7 +4,7 @@
 
 LAYOUT_WITH_LEGEND()
 
-title Herzien Dynamisch Container diagram voor Triptop Login functionaliteit
+title Dynamisch Container diagram voor Triptop Login functionaliteit
 
 Person(reiziger, "Reiziger", "Een persoon die een vakantiereis wil plannen en boeken")
 
