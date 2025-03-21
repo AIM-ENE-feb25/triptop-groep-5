@@ -2,7 +2,7 @@
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 
 LAYOUT_WITH_LEGEND()
-left to right direction
+top to bottom direction
 
 title Context diagram voor het Triptop systeem
 
