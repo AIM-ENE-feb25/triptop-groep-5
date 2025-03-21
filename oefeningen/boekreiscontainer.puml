@@ -12,9 +12,6 @@ System_Boundary(triptopSysteem, "Triptop Applicatie") {
     Container(webApp, "Web Applicatie", "HTML, CSS, JavaScript", "Stelt gebruikers in staat om reizen samen te stellen en te boeken")
 
     Container(apiGateway, "API Gateway", "?", "Routeert API-verzoeken naar de juiste microservices")
-
-    Container(identityProvider, "Identity Provider", "Authentication Service", "Beheert authenticatie en autorisatie")
-
     Container(tripService, "Reis Service", "Trip Management", "Beheert de samenstelling en status van de reis")
 
     Container(accommodationAdapter, "Accommodatie Adapter", "Service Adapter", "Integreert met externe accommodatiediensten")
@@ -46,11 +43,12 @@ RelIndex(9, webApp, reiziger, "9. Presenteert reisopties en totaalprijs", "HTML/
 
 RelIndex(10, reiziger, webApp, "10. Bevestigt boeking", "HTTPS")
 RelIndex(11, webApp, apiGateway, "11. Stuurt boekingsverzoek", "JSON/HTTPS")
-RelIndex(15, paymentService, paymentExternal, "15. Verwerkt betaling", "API")
+RelIndex(12, apiGateway, paymentService, "12. Verzoekt betaling", "JSON/HTTPS")
+RelIndex(13, paymentService, paymentExternal, "13. Verwerkt betaling", "API")
 
-RelIndex(19, tripService, database, "19. Slaat definitieve reisgegevens op", "Database Query")
-RelIndex(20, tripService, apiGateway, "20. Stuurt boekingsbevestiging", "JSON/HTTPS")
-RelIndex(21, apiGateway, webApp, "21. Toont boekingsbevestiging", "JSON/HTTPS")
-RelIndex(22, webApp, reiziger, "22. Presenteert boekingsbevestiging", "HTML/UI")
+RelIndex(14, tripService, database, "14. Slaat definitieve reisgegevens op", "Database Query")
+RelIndex(15, tripService, apiGateway, "15. Stuurt boekingsbevestiging", "JSON/HTTPS")
+RelIndex(16, apiGateway, webApp, "16. Toont boekingsbevestiging", "JSON/HTTPS")
+RelIndex(17, webApp, reiziger, "17. Presenteert boekingsbevestiging", "HTML/UI")
 
 @enduml
