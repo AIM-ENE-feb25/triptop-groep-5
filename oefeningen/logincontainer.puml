@@ -15,7 +15,7 @@ System_Boundary(triptopSysteem, "Triptop Applicatie") {
 
     Container(identityProvider, "Identity Provider", "?", "Beheert gebruikersauthenticatie en autorisatie via externe identity providers")
 
-    ContainerDb(Db, "Database", "?", "Slaat gebruikersgegevens op")
+    ContainerDb(Db, "Database", "MongoDB", "Slaat gebruikersgegevens op")
 }
 
 System_Ext(microsoftIdentity, "Microsoft Identity", "Microsoft Azure AD Service")
