@@ -1,0 +1,29 @@
+@startuml "Triptop - Context Diagram"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title Context diagram voor het Triptop systeem
+
+Person(reiziger, "Reiziger", "Een persoon die een vakantiereis wil plannen en boeken")
+
+System(triptopSysteem, "Triptop Applicatie", "Stelt reizigers in staat om hun vakantiereis te plannen, boeken, wijzigen en betalen met behulp van verschillende bouwstenen")
+
+System_Ext(identityProviders, "Identity Providers", "Externe authenticatiediensten zoals Google, Microsoft, AirBnB")
+System_Ext(accommodatieDiensten, "Accommodatiediensten", "Booking.com, Airbnb, eigen beheer")
+System_Ext(vervoerDiensten, "Vervoersdiensten", "NS, Deutsche Bahn, KLM, veerdiensten")
+System_Ext(autoverhuurDiensten, "Autoverhuurdiensten", "Sixt, Hertz, etc.")
+System_Ext(activiteitenDiensten, "Activiteitendiensten", "GetYourGuide, Tripadvisor, etc.")
+System_Ext(voedselDiensten, "Eet- en drinkdiensten", "Takeaway, Eet.nu, etc.")
+System_Ext(betalingsDiensten, "Betalingsdiensten", "Verschillende betalingsverwerkers")
+System_Ext(routeplanningDiensten, "Routeplanningdiensten", "Google Maps, etc.")
+
+Rel(reiziger, triptopSysteem, "Plant reizen, boekt diensten, doet betalingen")
+Rel(triptopSysteem, identityProviders, "Authenticatie van gebruikers", "OAuth/OIDC")
+Rel(triptopSysteem, accommodatieDiensten, "Boekt en beheert accommodaties", "APIs")
+Rel(triptopSysteem, vervoerDiensten, "Boekt en beheert vervoer", "APIs")
+Rel(triptopSysteem, autoverhuurDiensten, "Boekt en beheert huurauto's", "APIs")
+Rel(triptopSysteem, activiteitenDiensten, "Boekt en beheert activiteiten/excursies", "APIs")
+Rel(triptopSysteem, voedselDiensten, "Boekt en beheert eetgelegenheden", "APIs")
+Rel(triptopSysteem, betalingsDiensten, "Verwerkt betalingen", "APIs")
+Rel(triptopSysteem, routeplanningDiensten, "Plant routes tussen locaties", "APIs")
+
+@enduml

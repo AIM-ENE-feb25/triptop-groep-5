@@ -7,12 +7,9 @@ top to bottom direction
 title Context diagram voor het Triptop systeem
 
 Person(reiziger, "Reiziger", "Een persoon die een vakantiereis wil plannen en boeken")
-'Person(Admin, "Beheerder")
 
 System_Boundary(TripApp, "Triptop Applicatie") {
-'System(triptopSysteem, "Triptop Applicatie", "Stelt reizigers in staat om hun vakantiereis te plannen, boeken, wijzigen en betalen met behulp van verschillende bouwstenen")
 System(webApp, "Web Applicatie", "Biedt een gebruikersinterface voor klanten", [React.js])
-'System(mobileApp, "Mobiele Applicatie", "Biedt een mobiele gebruikersinterface voor klanten", [React.js])
 System(backend, "Backend", "descr", "Spring Boot")
 System(APIGateway, "API Gateway", "descr", "Node.js")
 SystemDb(DB, "Database", "Slaat gegevens op", "MySql ")
