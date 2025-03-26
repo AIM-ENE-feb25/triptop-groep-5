@@ -15,7 +15,7 @@ Wij gaan er van uit dat TripTop uitgroeit tot een applicatie die ver buiten Nede
 
 Omdat de schaalbaarheid erg belangrijk is voor deze applicatie weegt deze meer bij het overwegen van welk systeem wij gaan gebruiken.
 
-### Descision: MangoDB
+### Decision: MangoDB
 
 **Reasoning:**
 
