@@ -82,10 +82,17 @@ Voordat deze casusomschrijving tot stand kwam, heeft de opdrachtgever de volgend
 > [!IMPORTANT]
 > Voeg toe: Container Diagram plus een Dynamic Diagram van een aantal scenario's inclusief begeleidende tekst.
 
+![Container Diagram Triptop](./images/containerdiagram.png)
+![Container Diagram Triptop reis boeken](./images/boekreiscontainerdiagram.png)
+![Container Diagram Triptop inlog](./images/logincontainerdiagram.png)
+
 ###     7.2. Components
 
 > [!IMPORTANT]
 > Voeg toe: Component Diagram plus een Dynamic Diagram van een aantal scenario's inclusief begeleidende tekst.
+
+![Component Diagram Triptop backend](./images/backendcomponentdiagram.png)
+![Component Diagram Triptop frontend](./images/frontendcomponentdiagram.png)
 
 ###     7.3. Design & Code
 
