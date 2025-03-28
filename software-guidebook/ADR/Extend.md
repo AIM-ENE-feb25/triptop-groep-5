@@ -1,5 +1,5 @@
 # ADR: `extends` voor uitbreidbaarheid met nieuwe bouwstenen
-## Datum: 2025-03-21
+## Datum: 2025-03-28
 
 ## Status
 Voorgesteld
