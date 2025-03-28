@@ -58,3 +58,7 @@ We kiezen er voor om voor deze ontwerpvraag de design patern **Adapter** te gebr
 ## Hoe zorg je dat een wijziging in een of meerdere APIs niet leidt tot een grote wijziging in de applicatie?
 
 ## Considered Options
+| Forces               |Facade|Anti-corruption layer|Proxy|Decorator|
+|----------------------|------|---------------------|-----|---------|
+| Schermt front-end af |+|++|+|-|
+
