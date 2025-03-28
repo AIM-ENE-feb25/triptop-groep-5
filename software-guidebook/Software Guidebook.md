@@ -101,14 +101,31 @@ Voordat deze casusomschrijving tot stand kwam, heeft de opdrachtgever de volgend
 
 
 ### Hoe zorg je dat een wijziging in een of meerdere APIs niet leidt tot een grote wijziging in de applicatie? 
+
+De adapter is zo geschreven dat hij de data die van een externe service afkomt eerst vergelijkt mat wat
+de tripService verwacht door checkDataFormat(). Is die niet gelijk aan het verwachtte patroon dan wordt er geen data doorgestuurd. 
+Als oplossing voor dit probleem bestaat translateDataFormat(), daarmee zetten we de data om naar het juiste patroon, dit wordt wel doorgestuurd.
+
 ![API Wijzigingen Opvangen](classDiagramTripTopAPIWijzigingOpvangen.png)
+#### [Sequence Diagram]
+
 
 ### Hoe maak je de applicatie uitbreidbaar met nieuwe bouwstenen?
+
+Door TripService() uit te breiden met TripServiceV2 (w.i.p. naam) kan er gemakkelijk extra functionaliteit toegevoegd worden aan de applicatie zonder al te veel te hoeven friemelen met de code die in gebruik is.
+
 ![Uitbreidbaarheid](classDiagramTripTopUitbreidbaarheid.png)
+#### [Sequence Diagram]
+
 
 
 ### Hoe zorg je ervoor dat je makkelijk een nieuwe externe service kan toevoegen?
+
+Door 'simpelweg' een nieuwe adapter aan de TripService te koppelen kan er een nieuwe externe service gekoppeld worden aan de applicatie
+
 ![Service Toevoegen](classDiagramTripTopServiceToevoegen.png)
+#### [Sequence Diagram]
+
 
 
 ## 8. Architectural Decision Records
