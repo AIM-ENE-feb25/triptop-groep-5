@@ -1,0 +1,101 @@
+@startuml "Triptop Travel Booking - Class Diagram"
+
+class Traveler {
+    """Een persoon die een reis plant en boekt."""
+    +planTrip()
+    +confirmBooking()
+}
+
+class WebApp {
+    """Een webApp waarmee gebruikers reizen kunnen plannen en boeken."""
+    +displayTripOptions()
+    +sendBookingRequest()
+    +displayBookingConfirmation()
+}
+
+interface APIService {
+    """Interface voor het verwerken van API-verzoeken."""
+    +handleRequest(request: Request): Response
+}
+
+class APIGateway implements APIService {
+    """ROute API-verzoeken naar de juiste microservices."""
+    +routeRequest()
+}
+
+class TripService {
+    """Beheert reiscreatie, beschikbaarheid en opslag."""
+    +createDraftTrip()
+    +checkAvailability()
+    +storeTrip()
+}
+
+interface ServiceAdapter {
+    """Interface voor het communiceren met externe services."""
+    +queryExternalService()
+}
+
+class AccommodationAdapter implements ServiceAdapter {
+    """Adapter voor het ophalen van accommodaties."""
+    +queryExternalService()
+}
+
+class ActivityAdapter implements ServiceAdapter {
+    """Adapter voor het ophalen van activiteiten."""
+    +queryExternalService()
+}
+
+class VehicleRentalAdapter implements ServiceAdapter {
+    """Adapter voor het ophalen van accommodaties."""
+    +queryExternalService()
+}
+
+
+class PaymentService {
+    """Verwerkt betalingen voor boekingen."""
+    +processPayment()
+}
+
+class Database {
+    """Beheert de opslag en het ophalen van reisgegevens."""
+    +storeData()
+    +retrieveData()
+}
+
+class ExternalAccommodationServices {
+    """Externe systemen zoals Booking.com en Airbnb voor accommodaties."""
+    +provideAvailability()
+}
+
+class ExternalVehicleRentalServices {
+    """Externe systemen zoals Booking.com en Airbnb voor accommodaties."""
+    +provideAvailability()
+}
+
+class ExternalActivityServices {
+    """Externe systemen zoals GetYourGuide en Tripadvisor voor activiteiten."""
+    +provideActivities()
+}
+
+class ExternalPaymentProcessors {
+    """Externe betalingsverwerkers zoals iDEAL, PayPal en creditcardbedrijven."""
+    +processPayment()
+}
+
+Traveler --> WebApp : uses
+WebApp --> APIGateway : sends requests
+APIGateway --> TripService : routes requests
+TripService --> AccommodationAdapter : requests availability
+TripService --> ActivityAdapter : requests availability
+TripService --> VehicleRentalAdapter : requests availability
+TripService --> Database : stores trip
+AccommodationAdapter --> ExternalAccommodationServices : queries
+ActivityAdapter --> ExternalActivityServices : queries
+VehicleRentalAdapter --> ExternalVehicleRentalServices : queries
+WebApp --> Traveler : displays confirmation
+APIGateway --> PaymentService : sends payment request
+PaymentService --> ExternalPaymentProcessors : processes payment
+TripService --> APIGateway : sends booking confirmation
+APIGateway --> WebApp : returns response
+
+@enduml
