@@ -312,9 +312,70 @@ We kiezen voor het gebruik van **`extends`** om de applicatie uitbreidbaar te ma
 
 ##### Risico's en beperkingen:
 - Het gebruik van `extends` kan leiden tot een complexere codebase als het niet zorgvuldig wordt toegepast
-- Unit testing kan uitdagender worden bij veel gedeeld gedrag in de basisklasse
+- Unit testing kan uitdagender worden bij veel gedeeld gedrag in de basisklass
 
-### 8.5. ADR-005 TITLE
+### 8.5. ADR-005 Design patterns voor Triptop
+
+#### Datum: 2025-03-28
+
+#### Status
+Voorgesteld
+
+#### Context
+Om de ontwikkeling van de **Triptop**-applicatie makkelijker te maken willen we gebruik maken van design patterns.
+
+##### Considered Options
+##### Hoe maak je de applicatie uitbreidbaar met nieuwe bouwstenen?
+
+| Forces                | Stategy | Factory | Template Method Pattern |Decorator Pattern|Chain of Responsibility|State Pattern|Command Pattern|
+|-----------------------|---|---------|------------------------|---|---|---|---|
+| Ondersteund extends   |++|+|++|+|+|+|0| 
+| flexibiliteit         |++| +|0|+|+|+|+|
+| Uitbreidbaarheid      |++|-|+|0|0|0|-|
+| Eenvoud implementatie |+|++|0|-|-|-|-|
+
+#### Hoe zorg je ervoor dat je makkelijk een nieuwe externe service kan toevoegen? (Adapters goed schrijven)
+| Forces                | Adapter | Facade | Proxy | Bridge | Decorator |
+|-----------------------|---|---------|-------|--------|-----------|
+| Interface afscherming |++|+| +     | +      | -         |
+| API Ondersteuning     |++|+| 0     | +      | -         |
+| Makkelijk toevoegen   |++|+| 0     | +      | 0         |
+|Testbaarheid           |++|+| +     | 0      | 0         |
+
+#### Hoe zorg je dat een wijziging in een of meerdere APIs niet leidt tot een grote wijziging in de applicatie?
+| Forces               |Facade|Anti-corruption layer|Proxy|Decorator|
+|----------------------|------|---------------------|-----|---------|
+| Schermt front-end af |+|++|+|-|
+
+#### Decision
+
+##### Hoe maak je de applicatie uitbreidbaar met nieuwe bouwstenen?
+We kiezen ervoor om voor deze ontwerpvraag de design patern **Strategy** te gebruiken. Met het gebruik van de design patern Strategy kunnen we de applicatie uitbreidbaar maken met nieuwe bouwstenen. Deze aanpak biedt de meeste flexibiliteit en maakt het mogelijk om nieuwe bouwstenen toe te voegen zonder bestaande code te wijzigen. Door gebruik te maken van Strategy kunnen we nieuwe functionaliteit toevoegen en bestaande code hergebruiken.
+
+##### Hoe zorg je ervoor dat je makkelijk een nieuwe externe service kan toevoegen? (Adapters goed schrijven)
+We kiezen er voor om voor deze ontwerpvraag de design patern **Adapter** te gebruiken. Met het gebruik van de design patern Adapter kunnen we makkelijk een nieuwe externe service toevoegen. Deze aanpak biedt de meeste flexibiliteit en maakt het mogelijk om nieuwe externe services toe te voegen zonder bestaande code te wijzigen. Door gebruik te maken van Adapter kunnen we gemakkelijk nieuwe API services toevoegen zonder extra code te schrijven ook is het makkelijk om de code met unit tests te testen.
+
+##### Hoe zorg je dat een wijziging in een of meerdere APIs niet leidt tot een grote wijziging in de applicatie?
+
+#### Consequences
+
+##### Positieve consequenties:
+- De applicatie is eenvoudig uitbreidbaar met nieuwe bouwstenen
+- De ontwikkelingstijd wordt verkort doordat bestaande code hergebruikt kan worden
+- De applicatie is flexibel en kan gemakkelijk worden aangepast aan veranderende eisen
+- De codebase wordt eenvoudiger en beter onderhoudbaar
+- De applicatie is eenvoudig te testen en te onderhouden
+
+##### Risico's en beperkingen:
+- Het gebruik van Strategy kan leiden tot een complexere codebase als het niet zorgvuldig wordt toegepast
+- Het kan lastig zijn om de juiste strategie te kiezen voor een specifieke situatie
+- Het kan moeilijk zijn om te begrijpen hoe de verschillende strategieën samenwerken in de applicatie
+- Het gebruik van Adapter kan leiden tot een complexere codebase met veel boiler code
+- Het kan voorkomen dat de API verkeerd vertaald wordt naar de intere interface
+- Als de API veranderd moet de adapter ook aangepast worden
+
+
+### 8.5. ADR-006 TITLE
 
 > [!TIP]
 > These documents have names that are short noun phrases. For example, "ADR 1: Deployment on Ruby on Rails 3.0.10" or "ADR 9: LDAP for Multitenant Integration". The whole ADR should be one or two pages long. We will write each ADR as if it is a conversation with a future developer. This requires good writing style, with full sentences organized into paragraphs. Bullets are acceptable only for visual style, not as an excuse for writing sentence fragments. (Bullets kill people, even PowerPoint bullets.)

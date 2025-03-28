@@ -5,7 +5,7 @@
 Voorgesteld
 
 ## Context
-Voor de ontwikkeling van de **Triptop**-applicatie makkelijker te maken willen we gebruik maken van design patterns.
+Om de ontwikkeling van de **Triptop**-applicatie makkelijker te maken willen we gebruik maken van design patterns.
 ## Hoe maak je de applicatie uitbreidbaar met nieuwe bouwstenen?
 ## Considered Options 
 | Forces                | Stategy | Factory | Template Method Pattern |Decorator Pattern|Chain of Responsibility|State Pattern|Command Pattern|
