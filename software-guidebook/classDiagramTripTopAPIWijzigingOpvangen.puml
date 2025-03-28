@@ -36,13 +36,17 @@ interface ServiceAdapter {
 }
 
 class AccommodationAdapter implements ServiceAdapter {
-    """Adapter voor het ophalen van accommodaties."""
+    """Adapter voor het ophalen en controleren van accommodaties."""
     +queryExternalService()
+    +checkDataFormat()
+    +translateDataFormat()
 }
 
 class ActivityAdapter implements ServiceAdapter {
-    """Adapter voor het ophalen van activiteiten."""
+    """Adapter voor het ophalen en controleren van activiteiten."""
     +queryExternalService()
+    +checkDataFormat()
+    +translateDataFormat()
 }
 
 class PaymentService {
@@ -77,8 +81,8 @@ APIGateway --> TripService : routes requests
 TripService --> AccommodationAdapter : requests availability
 TripService --> ActivityAdapter : requests availability
 TripService --> Database : stores trip
-AccommodationAdapter --> ExternalAccommodationServices : queries
-ActivityAdapter --> ExternalActivityServices : queries
+AccommodationAdapter --> ExternalAccommodationServices : queries, validates and translates
+ActivityAdapter --> ExternalActivityServices : queries, validates and translates
 WebApp --> Traveler : displays confirmation
 APIGateway --> PaymentService : sends payment request
 PaymentService --> ExternalPaymentProcessors : processes payment

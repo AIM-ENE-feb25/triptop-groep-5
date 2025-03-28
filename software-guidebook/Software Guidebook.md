@@ -99,6 +99,18 @@ Voordat deze casusomschrijving tot stand kwam, heeft de opdrachtgever de volgend
 > [!IMPORTANT]
 > Voeg toe: Per ontwerpvraag een Class Diagram plus een Sequence Diagram van een aantal scenario's inclusief begeleidende tekst.
 
+
+### Hoe zorg je dat een wijziging in een of meerdere APIs niet leidt tot een grote wijziging in de applicatie? 
+![API Wijzigingen Opvangen](classDiagramTripTopAPIWijzigingOpvangen.png)
+
+### Hoe maak je de applicatie uitbreidbaar met nieuwe bouwstenen?
+![Uitbreidbaarheid](classDiagramTripTopUitbreidbaarheid.png)
+
+
+### Hoe zorg je ervoor dat je makkelijk een nieuwe externe service kan toevoegen?
+![Service Toevoegen](classDiagramTripTopServiceToevoegen.png)
+
+
 ## 8. Architectural Decision Records
 ### 8.1. ADR-001 API-keuzes voor reisapplicatie
 
