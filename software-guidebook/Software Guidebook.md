@@ -153,17 +153,17 @@ dynamisch wisselen tussen deze strategieën, afhankelijk van de beschikbaarheid 
 ![Class diagram caching](./images/ClassdiagramCaching.png)
 
 Key components van deze diagram:
-1. ```DataFetchStrategy``` Interface: Dit is de kern van het Strategy Pattern. Het definieert een gemeenschappelijke interface voor alle strategieën om data op te halen, met de methode ```fetchData()```.
+1. `DataFetchStrategy` Interface: Dit is de kern van het Strategy Pattern. Het definieert een gemeenschappelijke interface voor alle strategieën om data op te halen, met de methode ```fetchData()```.
 2. Concrete strategieën:
-- ```DirectServiceStrategy```: Haalt gegevens rechtstreeks op via de externe service wanneer deze beschikbaar is.
-- ```CacheStrategy```: Haalt gegevens uit de cache en valt terug op een alternatieve strategie wanneer er geen cache-data beschikbaar is.
-3. ```DataFetchContext```: Gebruikt de huidige strategie om gegevens op te halen. Dit stelt de applicatie in staat om tijdens runtime te wisselen tussen verschillende strategieën.
-4. ```StrategySelector```: Beslist welke strategie gebruikt moet worden op basis van de beschikbaarheid van de service.
+- `DirectServiceStrategy`: Haalt gegevens rechtstreeks op via de externe service wanneer deze beschikbaar is.
+- `CacheStrategy`: Haalt gegevens uit de cache en valt terug op een alternatieve strategie wanneer er geen cache-data beschikbaar is.
+3. `DataFetchContext`: Gebruikt de huidige strategie om gegevens op te halen. Dit stelt de applicatie in staat om tijdens runtime te wisselen tussen verschillende strategieën.
+4. `StrategySelector`: Beslist welke strategie gebruikt moet worden op basis van de beschikbaarheid van de service.
 5. Ondersteunende klassen:
-- ```ServiceClient```: Verzorgt de communicatie met externe services.
-- ```CacheProvider```: Beheert de cache-operaties (opslaan, ophalen, invalideren).
-- ```RequestParams```: Bevat de parameters voor het verzoek, inclusief het type data dat wordt opgevraagd.
-- ```Datatype``` <b>Enum</b>: categoriseert verschillende typen gegevens voor de juiste TTL-configuratie.
+- `ServiceClient`: Verzorgt de communicatie met externe services.
+- `CacheProvider`: Beheert de cache-operaties (opslaan, ophalen, invalideren).
+- `RequestParams`: Bevat de parameters voor het verzoek, inclusief het type data dat wordt opgevraagd.
+- `Datatype` <b>Enum</b>: categoriseert verschillende typen gegevens voor de juiste TTL-configuratie.
 
 ## 8. Architectural Decision Records
 ### 8.1. ADR-001 API-keuzes voor reisapplicatie
@@ -431,12 +431,12 @@ We kiezen er voor om voor deze ontwerpvraag de design patern **Adapter** te gebr
 - Als de API veranderd moet de adapter ook aangepast worden
 
 
-### 8.5. ADR-006 Service niet beschikbaar
+### 8.6. ADR-006 Service niet beschikbaar
 
 ## Datum: 2025-04-01
 
 ## Status
-Voorgesteld
+Geaccepteerd
 
 ## Context
 

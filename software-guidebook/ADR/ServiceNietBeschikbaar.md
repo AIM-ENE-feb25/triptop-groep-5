@@ -3,7 +3,7 @@
 ## Datum: 2025-04-01
 
 ## Status
-Voorgesteld
+Geaccepteerd
 
 ## Context
 
