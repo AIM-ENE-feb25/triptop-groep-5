@@ -75,6 +75,17 @@ Voordat deze casusomschrijving tot stand kwam, heeft de opdrachtgever de volgend
 > [!IMPORTANT]
 > Beschrijf zelf de belangrijkste architecturele en design principes die zijn toegepast in de software.
 
+#### Hoe ga je om met aanroepen van externe services die niet beschikbaar zijn en toch verwacht wordt dat er waardevolle output gegeven wordt?
+Het principle wat het beste bij deze vraag past, is het Open/Closed Principle. Dit priciple stelt dat bestaande code niet gewijzigd hoeft te worden 
+om nieuwe functionaliteit toe te voegen. <br>
+In de context van de ADR bij deze vraag:
+- De caching-strategie laat het systeem uitbreidbaar zijn voor verschillende soorten gegevens en verschillende vervaltijden, zonder de kernfunctionaliteit te verwijderen.
+- Het systeem kan nieuwe caching-regels toevoegen zonder bestaande implementaties te verstoren.
+- Wanneer nieuwe externe services worden toegevoegd, kan het caching-mechanisme hierop worden toegepast zonder dat de basisarchitectuur verandert.
+
+Bovendien maakt dit principe het mgoelijk om in de toekomst eenvoudig andere fallback-strategieën toe te voegen, zonder dat de kernfunctionaliteit van de applicatie
+hoeft te worden aangepast. Het systeem blijft gesloten voor wijzigingen in bestaande componenten, maar open voor uitbreiding met nieuwe caching-regels of strategieën.
+
 ## 7. Software Architecture
 
 ###     7.1. Containers
@@ -126,7 +137,19 @@ Door 'simpelweg' een nieuwe adapter aan de TripService te koppelen kan er een ni
 ![Service Toevoegen](classDiagramTripTopServiceToevoegen.png)
 #### [Sequence Diagram]
 
+### Hoe ga je om met aanroepen van externe services die niet beschikbaar zijn en toch verwacht wordt dat er waardevolle output gegeven wordt?
+#### Design pattern
+Het <b>Strategy Pattern</b> is ideaal in dit scenario, omdat:
+1. Het scheidt de beslissing over wanneer en hoe te cachen van de daadwerkelijke implementatie van de caching.
+2. Het maakt het mogelijk om verschillende caching-strategieën te definiëren en deze dynamisch te wisselen, zonder de kern van de applicatie te wijzigen.
+3. Het kan verschillende caching-algoritmes encapsuleren voor verschillende gegevenstypen en deze configureerbaar maken.
+4. Als in de toekomst toch besloten wordt om alsnog meerdere services als fallback toe te voegen, kan dit als een nieuwe strategie worden geïmplementeerd zonder de bestaande code te veranderen.
+5. Het stelt het systeem in staat om eenvoudig te schakelen tussen het halen van gegevens uit de cache of van de externe service.
 
+In de context van de ADR zou je een interface kunnen maken voor het ophalen van gegevens, met concrete implementaties voor directe service-aanroepen en cache-gebaseerde ophaalmethoden. Het systeem kan dan
+dynamisch wisselen tussen deze strategieën, afhankelijk van de beschikbaarheid van de externe services.
+
+#### Class Diagram
 
 ## 8. Architectural Decision Records
 ### 8.1. ADR-001 API-keuzes voor reisapplicatie
