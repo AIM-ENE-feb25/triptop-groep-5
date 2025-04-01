@@ -150,6 +150,20 @@ In de context van de ADR zou je een interface kunnen maken voor het ophalen van 
 dynamisch wisselen tussen deze strategieën, afhankelijk van de beschikbaarheid van de externe services.
 
 #### Class Diagram
+![Class diagram caching](./images/ClassdiagramCaching.png)
+
+Key components van deze diagram:
+1. ```DataFetchStrategy``` Interface: Dit is de kern van het Strategy Pattern. Het definieert een gemeenschappelijke interface voor alle strategieën om data op te halen, met de methode ```fetchData()```.
+2. Concrete strategieën:
+- ```DirectServiceStrategy```: Haalt gegevens rechtstreeks op via de externe service wanneer deze beschikbaar is.
+- ```CacheStrategy```: Haalt gegevens uit de cache en valt terug op een alternatieve strategie wanneer er geen cache-data beschikbaar is.
+3. ```DataFetchContext```: Gebruikt de huidige strategie om gegevens op te halen. Dit stelt de applicatie in staat om tijdens runtime te wisselen tussen verschillende strategieën.
+4. ```StrategySelector```: Beslist welke strategie gebruikt moet worden op basis van de beschikbaarheid van de service.
+5. Ondersteunende klassen:
+- ```ServiceClient```: Verzorgt de communicatie met externe services.
+- ```CacheProvider```: Beheert de cache-operaties (opslaan, ophalen, invalideren).
+- ```RequestParams```: Bevat de parameters voor het verzoek, inclusief het type data dat wordt opgevraagd.
+- ```Datatype``` <b>Enum</b>: categoriseert verschillende typen gegevens voor de juiste TTL-configuratie.
 
 ## 8. Architectural Decision Records
 ### 8.1. ADR-001 API-keuzes voor reisapplicatie
@@ -299,7 +313,26 @@ Omdat de schaalbaarheid erg belangrijk is voor deze applicatie weegt deze meer b
 1. **Schaalbaarheid**: MongoDB en CouchDB zijn als NoSQL systemen beide beter schaalbaar dan MySQL, met MongoDB als winnaar tussen de twee NoSQL systemen.
 2. **Betrouwbaarheid**: CouchDB is in haar kern opgezet als een systeem dat goed kan omgaan met onbetrouwbare / wegvallende hardware en daardoor het meest betrouwbare systeem in deze vergelijking. MongoDB presteert echter beter, met nog steeds ruim voldoende betrouwbaarheid.
 
-#### Consequences TO DO
+#### Consequences 
+Schaalbaar systeem voor groeiende gebruikersbasis
+
+- MongoDB maakt horizontale schaalbaarheid mogelijk, waardoor de applicatie goed kan meegroeien met de verwachte internationale uitbreiding.
+
+Flexibele dataopslag
+
+- Door het schema-loze ontwerp kunnen we eenvoudig nieuwe features en datatypes toevoegen zonder grote migraties uit te voeren.
+
+Complexe queries vereisen extra optimalisatie
+
+- In vergelijking met relationele databases kunnen complexe queries lastiger zijn. Indexering en aggregaties moeten goed worden geoptimaliseerd om prestaties te garanderen.
+
+Consistentiemanagement vereist aandacht
+
+- MongoDB biedt configuraties voor strong consistency, maar standaard werkt het met een eventually consistent model. Dit moet goed worden afgestemd op de eisen van de applicatie.
+
+Mogelijke leercurve voor het team
+
+- Als het team meer ervaring heeft met SQL-gebaseerde systemen, kan extra training nodig zijn om MongoDB effectief te gebruiken.
 
 ### 8.4. ADR-004 `extends` voor uitbreidbaarheid met nieuwe bouwstenen
 
@@ -398,35 +431,51 @@ We kiezen er voor om voor deze ontwerpvraag de design patern **Adapter** te gebr
 - Als de API veranderd moet de adapter ook aangepast worden
 
 
-### 8.5. ADR-006 TITLE
+### 8.5. ADR-006 Service niet beschikbaar
 
-> [!TIP]
-> These documents have names that are short noun phrases. For example, "ADR 1: Deployment on Ruby on Rails 3.0.10" or "ADR 9: LDAP for Multitenant Integration". The whole ADR should be one or two pages long. We will write each ADR as if it is a conversation with a future developer. This requires good writing style, with full sentences organized into paragraphs. Bullets are acceptable only for visual style, not as an excuse for writing sentence fragments. (Bullets kill people, even PowerPoint bullets.)
+## Datum: 2025-04-01
 
-#### Context
+## Status
+Voorgesteld
 
-> [!TIP]
-> This section describes the forces at play, including technological, political, social, and project local. These forces are probably in tension, and should be called out as such. The language in this section is value-neutral. It is simply describing facts about the problem we're facing and points out factors to take into account or to weigh when making the final decision.
+## Context
 
-#### Considered Options
+In onze applicatie zijn we afhankelijk van externe services voor het verkrijgen van bepaalde gegevens.
+Er zijn situaties waarin deze services tijdelijk niet beschikbaar zijn, maar waarbij van onze applicatie nog steeds
+verwacht wordt dat deze waardevolle output levert aan de eindgebruiker. We moeten een strategie bepalen om met deze
+uitvalsituaties om te gaan zonder dat de gebruikerservaring ernstig wordt aangetast.
 
-> [!TIP]
-> This section describes the options that were considered, and gives some indication as to why the chosen option was selected.
+#### Ontwerpvraag
+Hoe ga je om met aanroepen van externe services die niet beschikbaar zijn en toch verwacht wordt dat er waardevolle output gegeven wordt?
 
-#### Decision
+## Considered Options
 
-> [!TIP]
-> This section describes our response to the forces/problem. It is stated in full sentences, with active voice. "We will …"
+| Forces             | Cache | Error | Meerdere services |
+|--------------------|-------|-------|-------------------|
+| Betrouwbaarheid    | ++    | -     | +                 |
+| Actualiteit        | 0     | ++    | +                 |
+| Complexiteit       | 0     | --    | ++                |
+| Onderhoudskosten   | +     | -     | +                 |
+| Gebruikerservaring | +     | --    | +                 |   
 
-#### Status
+## Decision
 
-> [!TIP]
-> A decision may be "proposed" if the project stakeholders haven't agreed with it yet, or "accepted" once it is agreed. If a later ADR changes or reverses a decision, it may be marked as "deprecated" or "superseded" with a reference to its replacement.
+Na het bekijken van de geschikte opties hebben we besloten om een caching-strategie te gebruiken om met niet-beschikbare
+services om te gaan.
+1. Implementeer een eenvoudig caching-mechanisme dat gegevens van succesvolle service-aanroepen bewaart.
+2. Gebruik de cache automatisch als fallback wanneer een service niet beschikbaar is.
+3. Stel passende vervaltijden in, zodat gegevens niet te verouderd raken.
 
-#### Consequences
+## Consequences
+### Positieve gevolgen
+- Verhoogde betrouwbaarheid; de applicatie blijft functioneren, zelfs wanneer de services uitvallen.
+- Goede gebruikerservaring; gebruikers zullen minder onderbrekingen ervaren.
+- Vrij lage complexiteit; relatief eenvoudig te implementeren en onderhouden.
+- Kostenefficiënt; geen extra kosten voor extra services.
 
-> [!TIP]
-> This section describes the resulting context, after applying the decision. All consequences should be listed here, not just the "positive" ones. A particular decision may have positive, negative, and neutral consequences, but all of them affect the team and project in the future.
+### Negatieve gevolgen
+- Gegevens kunnen mogelijk verouderd zijn; gebruikers kunnen niet altijd de meest recente informatie zien.
+- Cache-beheer; een cache vereist monitoring en periodieke evaluatie van vervaltijden.
 
 ## 9. Deployment, Operation and Support
 

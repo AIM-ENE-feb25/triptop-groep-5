@@ -1,0 +1,80 @@
+@startuml "Service Unavailability Strategy Pattern"
+
+skinparam classAttributeIconSize 0
+skinparam classFontStyle bold
+
+interface "DataFetchStrategy" {
+  +fetchData(requestParams: RequestParams): Data
+}
+
+class "DirectServiceStrategy" implements DataFetchStrategy {
+  -serviceClient: ServiceClient
+  +fetchData(requestParams: RequestParams): Data
+}
+
+class "CacheStrategy" implements DataFetchStrategy {
+  -cache: CacheProvider
+  -fallbackStrategy: DataFetchStrategy
+  -ttlConfig: Map<DataType, Duration>
+  +fetchData(requestParams: RequestParams): Data
+  -storeInCache(key: String, data: Data, dataType: DataType): void
+  -getCacheKey(requestParams: RequestParams): String
+}
+
+class "ServiceClient" {
+  +callService(requestParams: RequestParams): Data
+  +isServiceAvailable(): boolean
+}
+
+class "CacheProvider" {
+  +get(key: String): Optional<Data>
+  +put(key: String, data: Data, ttl: Duration): void
+  +invalidate(key: String): void
+}
+
+class "DataFetchContext" {
+  -currentStrategy: DataFetchStrategy
+  +setStrategy(strategy: DataFetchStrategy): void
+  +fetchData(requestParams: RequestParams): Data
+}
+
+class "StrategySelector" {
+  -serviceClient: ServiceClient
+  -directStrategy: DirectServiceStrategy
+  -cacheStrategy: CacheStrategy
+  +selectStrategy(): DataFetchStrategy
+}
+
+class "RequestParams" {
+  +dataType: DataType
+  +queryParameters: Map<String, String>
+}
+
+enum "DataType" {
+  USER_PROFILE
+  PRODUCT_CATALOG
+  TRANSACTION_HISTORY
+  PRICING_DATA
+}
+
+DataFetchContext o--> "uses" DataFetchStrategy
+StrategySelector --> "selects" DataFetchStrategy
+StrategySelector --> "checks" ServiceClient
+DirectServiceStrategy --> "calls" ServiceClient
+CacheStrategy --> "uses" CacheProvider
+CacheStrategy o--> "falls back to" DataFetchStrategy
+RequestParams --> "categorized by" DataType
+
+note bottom of CacheStrategy
+  When external service is unavailable,
+  CacheStrategy returns cached data
+  based on TTL configuration
+end note
+
+note right of StrategySelector
+  Selects appropriate strategy
+  based on service availability
+  and request characteristics
+end note
+
+@enduml
