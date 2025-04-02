@@ -1,0 +1,33 @@
+@startuml "C4 Container Diagram - Service Onbeschikbaarheid"
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title "C4 Container Diagram - Caching Strategie voor Service Onbeschikbaarheid"
+
+Person(gebruiker, "Gebruiker", "Gebruikt de applicatie om gegevens op te vragen")
+
+System_Boundary(applicatieSysteem, "Applicatie Systeem") {
+    Container(webApp, "Web Applicatie", "Angular", "Biedt gebruikersinterface om gegevens te raadplegen en te beheren")
+
+    Container(apiGateway, "API Gateway", "Java/Spring Cloud Gateway", "Routeert verzoeken en biedt een uniform toegangspunt tot diensten")
+
+    Container(backendService, "Backend Service", "Java/Spring Boot", "Implementeert kernfunctionaliteit en caching strategie")
+
+    ContainerDb(mongoDb, "MongoDB Database", "MongoDB", "Slaat applicatiegegevens en cache op met TTL-indexen")
+
+    Container(monitoringService, "Monitoring Service", "Prometheus/Grafana", "Verzamelt en visualiseert metriek over systeem- en servicebeschikbaarheid")
+}
+
+System_Ext(externalService, "Externe Service", "Levert gegevens die door de applicatie gebruikt worden")
+
+Rel(gebruiker, webApp, "Gebruikt", "HTTPS")
+Rel(webApp, apiGateway, "Maakt verzoeken aan", "HTTPS/JSON")
+Rel(apiGateway, backendService, "Routeert verzoeken naar", "REST/HTTP")
+Rel(backendService, mongoDb, "Leest van/schrijft naar", "MongoDB Driver")
+Rel(backendService, externalService, "Haalt gegevens op van", "HTTPS/JSON")
+Rel(backendService, monitoringService, "Stuurt metriek naar", "Prometheus Protocol")
+Rel(apiGateway, monitoringService, "Stuurt metriek naar", "Prometheus Protocol")
+
+@enduml
