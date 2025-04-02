@@ -1,3 +1,8 @@
+# Read Me First
+The following was discovered as part of building this project:
+
+* The original package name 'nl.triptop.betaalmethode demo' is invalid and this project uses 'nl.triptop.betaalmethode.demo' instead.
+
 # Getting Started
 
 ### Reference Documentation
