@@ -1,0 +1,41 @@
+@startuml "C4 Component Diagram - Service Onbeschikbaarheid"
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title "C4 Component Diagram - Caching Strategie voor Service Onbeschikbaarheid"
+
+Person(gebruiker, "Eindgebruiker", "Gebruikt de applicatie om gegevens op te vragen")
+
+System_Boundary(applicatie, "Applicatie") {
+    Component(apiGateway, "API Gateway", "REST/HTTP", "Centraliseert verzoeken en routeert deze naar de juiste services")
+
+    Component(dataService, "Data Service", "Java/Spring", "Orkestreert het ophalen van gegevens en het toepassen van de juiste strategie")
+
+    Component(strategySelectorComp, "Strategy Selector", "Java", "Selecteert de optimale data-ophaalmethode op basis van service-beschikbaarheid")
+
+    Component(serviceClientComp, "Service Client", "Java/HTTP Client", "Communiceert met externe services en monitort beschikbaarheid")
+
+    Component(cacheManagerComp, "Cache Manager", "Java/MongoDB Client", "Beheert het opslaan en ophalen van gecachete gegevens")
+
+    Component(monitoringComp, "Monitoring Service", "Java/Micrometer", "Houdt metrics bij over service-beschikbaarheid en cache-effectiviteit")
+}
+
+System_Ext(externalService, "Externe Service", "Levert gegevens die de applicatie nodig heeft")
+
+ContainerDb(cacheDb, "Cache Database", "MongoDB", "Slaat gecachete gegevens op met TTL-indexen")
+
+Rel(gebruiker, apiGateway, "Vraagt gegevens op via", "HTTP/JSON")
+Rel(apiGateway, dataService, "Stuurt verzoeken door naar", "REST/HTTP")
+Rel(dataService, strategySelectorComp, "Gebruikt", "Java API")
+Rel(strategySelectorComp, serviceClientComp, "Controleert beschikbaarheid via", "Method call")
+Rel(strategySelectorComp, cacheManagerComp, "Selecteert bij onbeschikbaarheid", "Method call")
+Rel(dataService, serviceClientComp, "Haalt gegevens op via", "Method call")
+Rel(dataService, cacheManagerComp, "Haalt cache-gegevens op via", "Method call")
+Rel(serviceClientComp, externalService, "Roept aan", "HTTP/JSON")
+Rel(cacheManagerComp, cacheDb, "Leest van/schrijft naar", "MongoDB Protocol")
+Rel(serviceClientComp, monitoringComp, "Rapporteert beschikbaarheid aan", "Events")
+Rel(cacheManagerComp, monitoringComp, "Rapporteert cache metrics aan", "Events")
+
+@enduml
