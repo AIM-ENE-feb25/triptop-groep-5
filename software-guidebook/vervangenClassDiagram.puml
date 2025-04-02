@@ -1,0 +1,50 @@
+@startuml "API Adapter - Class Diagram"
+
+' Nieuwe class diagram ter ondersteuning van de API Adapter
+
+class WebApp {
+    +displayData()
+    +sendRequest()
+}
+
+interface APIService {
+    +handleRequest(request: Request): Response
+}
+
+class APIGateway implements APIService {
+    +routeRequest()
+}
+
+class BackendService {
+    +processBusinessLogic()
+}
+
+interface ServiceAdapter {
+    +queryExternalService()
+}
+
+class APIAdapter implements ServiceAdapter {
+    +queryExternalService()
+    +switchAPI()
+}
+
+class ExternalServiceOld {
+    +provideData()
+}
+
+class ExternalServiceNew {
+    +provideData()
+}
+
+WebApp --> APIGateway : stuurt requests
+APIGateway --> BackendService : routert requests
+BackendService --> APIAdapter : request data
+APIAdapter --> ExternalServiceOld : Kan voor nu nog praten met
+APIAdapter --> ExternalServiceNew : Kan praten met
+
+note right of APIAdapter
+De adapter is het enige onderdeel dat aangepast moet worden om van api naar api te wisselen.
+
+end note
+
+@enduml

@@ -105,11 +105,14 @@ hoeft te worden aangepast. Het systeem blijft gesloten voor wijzigingen in besta
 ![Component Diagram Triptop backend](./images/backendcomponentdiagram.png)
 ![Component Diagram Triptop frontend](./images/frontendcomponentdiagram.png)
 
+frontend redux store moeten in slices
+
 ###     7.3. Design & Code
 
 > [!IMPORTANT]
 > Voeg toe: Per ontwerpvraag een Class Diagram plus een Sequence Diagram van een aantal scenario's inclusief begeleidende tekst.
 
+Maak van de DB class een facade.
 
 ### Hoe zorg je dat een wijziging in een of meerdere APIs niet leidt tot een grote wijziging in de applicatie? 
 

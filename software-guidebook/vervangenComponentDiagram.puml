@@ -1,0 +1,41 @@
+@startuml
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title "Component Diagram - API Adapter voor Overgang Oude naar Nieuwe API"
+
+Person(gebruiker, "Gebruiker", "Interactie met de applicatie")
+
+Container_Boundary(applicatie, "Applicatie") {
+    Component(webApp, "Web Applicatie", "JS/React", "UI voor gebruikers")
+    Component(apiGateway, "API Gateway", "Spring Cloud Gateway", "Routeert verzoeken")
+    Component(backendService, "Backend Service", "Java/Spring Boot", "Business logica en API-interactie")
+    Component(adapter, "API Adapter", "Java", "Maakt abstractie van API-wijzigingen")
+}
+
+System_Ext(externeDienst_old, "Legacy API", "Oude API zonder moderne beveiliging")
+System_Ext(externeDienst_new, "Nieuwe API", "Nieuwe API met moderne beveiliging")
+
+gebruiker --> webApp : Gebruikt (HTTPS)
+webApp --> apiGateway : Maakt verzoeken aan (HTTPS/JSON)
+apiGateway --> backendService : Routeert verzoeken (REST/HTTP)
+backendService --> adapter : Vraagt data op via (Interface)
+adapter --> externeDienst_old : Kan voor overstappen nog praten met (REST/HTTP)
+adapter --> externeDienst_new : Kan overschakelen naar (REST/HTTPS, Beveiligd)
+
+
+note right of adapter
+De adapter zorgt ervoor dat de backend
+kan wisselen tussen de oude en nieuwe API
+zonder codewijzigingen in de backend.
+end note
+
+note left of externeDienst_old
+
+Oude api is nog verbonden maar kan worden losgekoppeld wanneer de adapter is aangepast
+
+end note
+
+@enduml
