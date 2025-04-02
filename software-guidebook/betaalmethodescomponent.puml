@@ -1,0 +1,31 @@
+@startuml "C4 Component Diagram - Betaalmethodes"
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+LAYOUT_WITH_LEGEND()
+title "C4 Component Diagram - Betaalmethodes"
+
+Person(gebruiker, "Gebruiker", "Een persoon die een betaling wil uitvoeren")
+
+System_Boundary(betaalmethodes, "Betaalmethodes Component") {
+    Component(Betalingscontroller, "Betaalcontroller", "Java", "Verwerkt betalingsverzoeken en communiceert met betaalstrategieën")
+    Component(Betalingsstrategie, "Betaalstrategie", "Java", "Interface voor verschillende betaalmethoden")
+    Component(IdealStrategy, "iDEAL Strategie", "Java", "Verwerkt betalingen via iDEAL")
+    Component(PaypalStrategy, "PayPal Strategie", "Java", "Verwerkt betalingen via PayPal")
+    Component(CreditcardStrategy, "Creditcard Strategie", "Java", "Verwerkt betalingen via creditcard")
+}
+
+System_Ext(Ideal, "iDEAL", "Nederlandse online betaalprovider")
+System_Ext(Paypal, "PayPal", "Internationale online betaalprovider")
+System_Ext(Creditcard, "Creditcardnetwerk", "Internationale creditcardproviders")
+
+' Relaties
+Rel(gebruiker, Betalingscontroller, "Doet betalingsverzoek")
+Rel(Betalingscontroller, Betalingsstrategie, "Gebruikt gekozen strategie")
+Rel(Betalingsstrategie, IdealStrategy, "Implementeert")
+Rel(Betalingsstrategie, PaypalStrategy, "Implementeert")
+Rel(Betalingsstrategie, CreditcardStrategy, "Implementeert")
+
+Rel(IdealStrategy, Ideal, "Doet betaling via")
+Rel(PaypalStrategy, Paypal, "Doet betaling via")
+Rel(CreditcardStrategy, Creditcard, "Doet betaling via")
+
+@enduml
