@@ -1,5 +1,4 @@
 package nl.triptop.betaalmethode.demo.controller;
-
 import nl.triptop.betaalmethode.demo.factory.BetaalStrategieFactory;
 import nl.triptop.betaalmethode.demo.model.BetalingRequest;
 import nl.triptop.betaalmethode.demo.strategie.BetaalStrategie;
