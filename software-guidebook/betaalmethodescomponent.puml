@@ -1,31 +1,28 @@
-@startuml "C4 Component Diagram - Betaalmethodes"
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
 LAYOUT_WITH_LEGEND()
-title "C4 Component Diagram - Betaalmethodes"
 
-Person(gebruiker, "Gebruiker", "Een persoon die een betaling wil uitvoeren")
+Person(user, "Gebruiker")
 
-System_Boundary(betaalmethodes, "Betaalmethodes Component") {
-    Component(Betalingscontroller, "Betaalcontroller", "Java", "Verwerkt betalingsverzoeken en communiceert met betaalstrategieën")
-    Component(Betalingsstrategie, "Betaalstrategie", "Java", "Interface voor verschillende betaalmethoden")
-    Component(IdealStrategy, "iDEAL Strategie", "Java", "Verwerkt betalingen via iDEAL")
-    Component(PaypalStrategy, "PayPal Strategie", "Java", "Verwerkt betalingen via PayPal")
-    Component(CreditcardStrategy, "Creditcard Strategie", "Java", "Verwerkt betalingen via creditcard")
-}
+Container(webApp, "TripTop App", "Spring Boot REST API")
 
-System_Ext(Ideal, "iDEAL", "Nederlandse online betaalprovider")
-System_Ext(Paypal, "PayPal", "Internationale online betaalprovider")
-System_Ext(Creditcard, "Creditcardnetwerk", "Internationale creditcardproviders")
+ContainerDb(db, "Database", "Opslag voor boekingen")
 
-' Relaties
-Rel(gebruiker, Betalingscontroller, "Doet betalingsverzoek")
-Rel(Betalingscontroller, Betalingsstrategie, "Gebruikt gekozen strategie")
-Rel(Betalingsstrategie, IdealStrategy, "Implementeert")
-Rel(Betalingsstrategie, PaypalStrategy, "Implementeert")
-Rel(Betalingsstrategie, CreditcardStrategy, "Implementeert")
+Component(controller, "BetaalController", "REST Controller", "Ontvangt betaalverzoeken en activeert juiste strategie")
+Component(factory, "BetaalStrategieFactory", "Factory", "Maakt de juiste strategie op basis van input")
+Component(strategy, "BetaalStrategie", "Interface", "Abstractie voor alle betaalstrategieën")
+Component(ideal, "IdealBetaling", "Strategie", "Implementeert betaling via iDEAL")
+Component(paypal, "PaypalBetaling", "Strategie", "Implementeert betaling via PayPal")
+Component(cc, "CreditcardBetaling", "Strategie", "Implementeert betaling via Creditcard")
 
-Rel(IdealStrategy, Ideal, "Doet betaling via")
-Rel(PaypalStrategy, Paypal, "Doet betaling via")
-Rel(CreditcardStrategy, Creditcard, "Doet betaling via")
+Rel(user, webApp, "Doet betaling")
+Rel(webApp, controller, "POST /betalen")
+Rel(controller, factory, "Vraagt juiste strategie")
+Rel(factory, ideal, "Geeft bij methode=ideal")
+Rel(factory, paypal, "Geeft bij methode=paypal")
+Rel(factory, cc, "Geeft bij methode=creditcard")
+Rel(controller, strategy, "Gebruikt -> verwerkBetaling()")
+Rel(strategy, db, "Opslaan transactie", "optioneel")
 
 @enduml

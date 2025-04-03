@@ -86,6 +86,17 @@ In de context van de ADR bij deze vraag:
 Bovendien maakt dit principe het mgoelijk om in de toekomst eenvoudig andere fallback-strategieën toe te voegen, zonder dat de kernfunctionaliteit van de applicatie
 hoeft te worden aangepast. Het systeem blijft gesloten voor wijzigingen in bestaande componenten, maar open voor uitbreiding met nieuwe caching-regels of strategieën.
 
+#### Hoe kunnen we verschillende betalingssystemen integreren voor de verschillende bouwstenen?
+Het principle wat het beste bij deze vraag past, is het open-closed principle. Dit principe stelt dat een systeem open moet zijn voor uitbreiding, maar gesloten voor aanpassing. je moet nieuwe functionaliteit kunnen toevoegen zonder bestaande code te hoeven wijzigen. . <br>
+
+In de context van de ADR bij deze vraag:
+
+- Dankzij het Strategy Pattern kunnen nieuwe betaalstrategieën eenvoudig worden toegevoegd zonder dat bestaande strategieën of de controller aangepast hoeven te worden
+
+- Het systeem blijft stabiel en betrouwbaar ook wanneer nieuwe betaalmethodes worden toegevoegd
+
+- De basisarchitectuur blijft ongewijzigd omdat uitbreiding plaatsvindt door toevoeging van losse strategieklassen.
+
 ## 7. Software Architecture
 
 ###     7.1. Containers
@@ -96,6 +107,7 @@ hoeft te worden aangepast. Het systeem blijft gesloten voor wijzigingen in besta
 ![Container Diagram Triptop](./images/containerdiagram.png)
 ![Container Diagram Triptop reis boeken](./images/boekreiscontainerdiagram.png)
 ![Container Diagram Triptop inlog](./images/logincontainerdiagram.png)
+![Container Diagram Triptop betaalsystemen]
 
 ###     7.2. Components
 
@@ -167,6 +179,17 @@ Key components van deze diagram:
 - `CacheProvider`: Beheert de cache-operaties (opslaan, ophalen, invalideren).
 - `RequestParams`: Bevat de parameters voor het verzoek, inclusief het type data dat wordt opgevraagd.
 - `Datatype` <b>Enum</b>: categoriseert verschillende typen gegevens voor de juiste TTL-configuratie.
+
+### Hoe kunnen we verschillende betalingssystemen integreren voor de verschillende bouwstenen?
+#### Design pattern
+Het <b>Strategy pattern + factory pattern</b> is ideaal in dit scenario, omdat:
+1. Het zorgt voor een duidelijke scheiding van verantwoordelijkheden tussen betaalstrategieën, objectcreatie en controlelogica.
+2. Het systeem flexibel uitbreidbaar blijft zonder bestaande code te hoeven aanpassen (OCP).
+3. Nieuwe betaalmethodes eenvoudig kunnen worden toegevoegd met minimale impact op de rest van de applicatie.
+
+In de context van de ADR zou je een interface kunnen maken voor de betaalstrategieën, met concrete implementaties voor elke betaalmethode. De factory kan dan de juiste strategie instantiëren op basis van de gebruikerskeuze of configuratie.
+#### Class Diagram
+
 
 ## 8. Architectural Decision Records
 ### 8.1. ADR-001 API-keuzes voor reisapplicatie

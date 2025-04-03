@@ -1,0 +1,32 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_TOP_DOWN()
+
+' Personen
+Person(user, "Gebruiker", "Iemand die een betaling wil starten via de app")
+
+' Systeem
+System_Boundary(s1, "BetaalmethodeDemo") {
+
+  Container(webApp, "Spring Boot Webapp", "Java + Spring Boot", "Verwerkt HTTP-verzoeken en start betalingen")
+  Container(controller, "BetaalController", "Spring REST Controller", "Ontvangt betaalverzoeken en roept strategieën aan")
+  Container(factory, "BetaalStrategieFactory", "Java class", "Selecteert de juiste betaalstrategie op basis van methode")
+  Container(strategie, "BetaalStrategieën", "Java interface + implementaties", "Implementeert betaalgedrag: iDEAL, PayPal, Creditcard")
+}
+
+System_Ext(paypal, "PayPal API", "Externe betaalsysteem")
+System_Ext(ideal, "iDEAL API", "Externe betaalsysteem")
+System_Ext(cc, "Creditcard API", "Externe betaalsysteem")
+
+' Relaties
+Rel(user, webApp, "Stuurt HTTP POST-verzoek met betaalgegevens")
+
+Rel(webApp, controller, "Maakt REST-call intern naar")
+Rel(controller, factory, "Vraagt juiste strategie op via")
+Rel(factory, strategie, "Creëert instantie van")
+
+Rel(strategie, paypal, "Verbindt bij gebruik van PaypalBetaling", "HTTPS")
+Rel(strategie, ideal, "Verbindt bij gebruik van IdealBetaling", "HTTPS")
+Rel(strategie, cc, "Verbindt bij gebruik van CreditcardBetaling", "HTTPS")
+
+@enduml

@@ -1,0 +1,18 @@
+@startuml
+actor Gebruiker
+participant "BetaalController" as Controller
+participant "BetaalStrategieFactory" as Factory
+participant "PaypalBetaling" as Paypal
+participant "PayPal API" as PayPalAPI
+
+Gebruiker -> Controller : POST /betalen (BetalingRequest)
+Controller -> Factory : maakStrategie("paypal")
+Factory -> Paypal : new PaypalBetaling()
+
+Controller -> Paypal : verwerkBetaling(BetalingRequest)
+Paypal -> PayPalAPI : create(payment)
+PayPalAPI --> Paypal : Payment (met redirect URLs)
+Paypal -> Controller : (log: redirect gebruiker naar PayPal)
+
+Controller --> Gebruiker : "Betaling succesvol gestart via paypal"
+@enduml

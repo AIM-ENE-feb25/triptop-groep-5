@@ -1,0 +1,50 @@
+@startuml "TripTop betaalsystemen - Class Diagram"
+
+interface BetaalStrategie {
+  + verwerkBetaling(BetalingsRequest request)
+}
+
+class BetalingsRequest {
+  - String methode
+  - double bedrag
+  + getMethode()
+  + setMethode(String methode)
+  + getBedrag()
+  + setBedrag(double bedrag)
+}
+
+class CreditcardBetaling {
+  + verwerkBetaling(BetalingsRequest request)
+}
+
+class IdealBetaling {
+  + verwerkBetaling(BetalingsRequest request)
+}
+
+class PaypalBetaling {
+  + verwerkBetaling(BetalingsRequest request)
+}
+
+class BetaalStrategieFactory {
+  + maakStrategie(String methode)
+}
+
+class BetaalController {
+}
+
+class BetaalmethodeDemoApplication {
+  + main(String[] args)
+}
+
+
+BetaalStrategie <|.. CreditcardBetaling : implements
+BetaalStrategie <|.. IdealBetaling : implements
+BetaalStrategie <|.. PaypalBetaling : implements
+
+BetaalmethodeDemoApplication --> BetaalController : start applicatie
+BetaalController --> BetaalStrategieFactory : maakt strategie
+BetaalController --> BetalingsRequest : ontvangt request
+BetaalController --> BetaalStrategie : voert strategie uit
+
+
+@enduml
