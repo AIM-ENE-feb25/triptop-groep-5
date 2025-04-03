@@ -1,50 +1,33 @@
-@startuml "API Adapter - Class Diagram"
+@startuml
 
-' Nieuwe class diagram ter ondersteuning van de API Adapter
-
-class WebApp {
-    +displayData()
-    +sendRequest()
-}
-
-interface APIService {
-    +handleRequest(request: Request): Response
-}
-
-class APIGateway implements APIService {
-    +routeRequest()
-}
-
-class BackendService {
-    +processBusinessLogic()
+class TripService {
+    +void requestAvailability()
 }
 
 interface ServiceAdapter {
-    +queryExternalService()
+    +void request()
 }
 
-class APIAdapter implements ServiceAdapter {
-    +queryExternalService()
-    +switchAPI()
+class ExternalAccommodationAdapter {
+    -OldAPI oldAPI
+    -NewAPI newAPI
+    -boolean useOldAPI
+    +ExternalAccommodationAdapter(oldAPI: OldAPI, newAPI: NewAPI)
+    +void request()
+    +void transformDataToOutput()
 }
 
-class ExternalServiceOld {
-    +provideData()
+class OldAPI {
+    +void externalRequest()
 }
 
-class ExternalServiceNew {
-    +provideData()
+class NewAPI {
+    +void externalRequest()
 }
 
-WebApp --> APIGateway : stuurt requests
-APIGateway --> BackendService : routert requests
-BackendService --> APIAdapter : request data
-APIAdapter --> ExternalServiceOld : Kan voor nu nog praten met
-APIAdapter --> ExternalServiceNew : Kan praten met
-
-note right of APIAdapter
-De adapter is het enige onderdeel dat aangepast moet worden om van api naar api te wisselen.
-
-end note
+TripService --> ExternalAccommodationAdapter : requests availability
+ExternalAccommodationAdapter --> OldAPI : queries if useOldAPI is true
+ExternalAccommodationAdapter --> NewAPI : queries if useOldAPI is false
+ServiceAdapter <|.. ExternalAccommodationAdapter
 
 @enduml
