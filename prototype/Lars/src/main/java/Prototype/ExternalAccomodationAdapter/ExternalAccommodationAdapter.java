@@ -46,7 +46,6 @@ public class ExternalAccommodationAdapter implements ServiceAdapter {
                     System.out.println("Date: " + review.get("date").asText());
                     System.out.println("Language: " + review.get("language").asText());
                     System.out.println("Score: " + review.get("score").asInt() + "/10");
-                    System.out.println("Summary: -"); //no summary in older API
                     System.out.println("Positive: " + review.get("positive").asText());
                     System.out.println("Negative: " + review.get("negative").asText());
 
@@ -56,9 +55,9 @@ public class ExternalAccommodationAdapter implements ServiceAdapter {
             } else {
                 // Handle New API Response
                 JsonNode hotelNode = jsonNode.get("data").get(0);
-                String hotelUrl = hotelNode.get("url").asText();
+                //String hotelUrl = hotelNode.get("url").asText();  // new feature in new api, not yet implemented
 
-                System.out.println("Hotel Reviews: " + hotelUrl);
+                //System.out.println("Hotel Reviews: " + hotelUrl);  // new feature in new api, not yet implemented
 
                 JsonNode reviewsArray = hotelNode.get("reviews");
                 for (JsonNode review : reviewsArray) {
@@ -66,13 +65,13 @@ public class ExternalAccommodationAdapter implements ServiceAdapter {
                     System.out.println("Date: " + review.get("date").asText());
                     System.out.println("Language: " + review.get("language").asText());
                     System.out.println("Score: " + review.get("score").asInt() + "/10");
-                    System.out.println("Summary: " + review.get("summary").asText());
+                    //System.out.println("Summary: " + review.get("summary").asText()); // new feature in new api, not yet implemented
                     System.out.println("Positive: " + review.get("positive").asText());
                     System.out.println("Negative: " + review.get("negative").asText());
 
                     JsonNode reviewer = review.get("reviewer");
                     System.out.println("Reviewer: " + reviewer.get("name").asText() + " (" + reviewer.get("country").asText() + ")");
-                    System.out.println("Purpose: " + reviewer.get("travel_purpose").asText());
+                    //System.out.println("Purpose: " + reviewer.get("travel_purpose").asText());  // new feature in new api, not yet implemented
                 }
             }
         } catch (Exception e) {
