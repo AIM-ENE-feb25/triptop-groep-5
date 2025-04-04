@@ -9,13 +9,30 @@ Dit software guidebook geeft een overzicht van de Triptop-applicatie. Het bevat 
 
 ## 2. Context
 
-> [!IMPORTANT]
-> Werk zelf dit hoofdstuk uit met context diagrammen en een beschrijving van de context van de software.
+![Context Diagram Triptop](./images/contextdiagram.png)
 
-Toelichting op de context van de software inclusief System Context Diagram:
-* Functionaliteit
-* Gebruikers
-* Externe systemen
+## Functionaliteit
+De TripTop app is een handig systeem om reizen te plannen. Wat kan je ermee doen:
+
+Reizen plannen: Gebruikers kunnen routes maken voor hun reis, inclusief waar ze naartoe gaan, waar ze slapen en wat ze willen doen.
+Boekingen regelen: De app werkt samen met websites waar je vluchten, hotels en activiteiten kunt boeken.
+
+## Gebruikers
+Verschillende mensen gebruiken de TripTop app:
+
+Vakantiegangers: Mensen die hun eigen reizen plannen.
+Systeembeheerders: IT-medewerkers die zorgen dat de app goed blijft werken.
+
+## Externe systemen
+TripTop werkt samen met andere systemen om alles goed te laten werken:
+
+Boekingssystemen: Verbinding met Booking.com voor vliegtickets, hotels en huurauto's.
+Betaalsystemen: Koppelingen met PayPal en iDEAL om veilig te kunnen betalen.
+Weerdiensten: Verbinding met weer-apps voor actuele weerinformatie.
+Kaartdiensten: Samenwerking met Maps voor routes en locatie-informatie.
+Hotelwebsites: Directe verbindingen met Booking.com en Airbnb.
+Activiteitenaanbieders: Samenwerking met Tripadvisor.
+Inlogsystemen: Mogelijkheden om in te loggen met je Google account.
 
 ## 3. Functional Overview
 
@@ -67,13 +84,19 @@ Voordat deze casusomschrijving tot stand kwam, heeft de opdrachtgever de volgend
 
 ## 5. Constraints
 
-> [!IMPORTANT]
-> Beschrijf zelf de beperkingen die op voorhand bekend zijn die invloed hebben op keuzes die wel of niet gemaakt kunnen of mogen worden.
+### Beperkingen die invloed hebben op keuzes:
+
+- Integratie van externe services: Keuze van betalingssystemen, vervoersdiensten en overnachtingsplatforms hangt af van beschikbare APIs en hun beperkingen.
+
+- Authenticatie en beveiliging: De implementatie van een centrale identity provider beperkt de keuzevrijheid in accountbeheer en vereist compatibiliteit met bestaande providers.
+
+- Modulariteit en uitbreidbaarheid: De architectuur moet zo ontworpen worden dat nieuwe bouwstenen eenvoudig toe te voegen zijn zonder grote wijzigingen in bestaande code.
+
+- Beschikbaarheid en fouttolerantie: Externe services kunnen uitvallen; het systeem moet hiermee om kunnen gaan zonder dat de gebruiker vastloopt.
+
+- Reisroute optimalisatie: Flexibiliteit in herplanning is nodig, maar moet in balans zijn met gebruiksvriendelijkheid en technische haalbaarheid.
 
 ## 6. Principles
-
-> [!IMPORTANT]
-> Beschrijf zelf de belangrijkste architecturele en design principes die zijn toegepast in de software.
 
 #### Hoe ga je om met aanroepen van externe services die niet beschikbaar zijn en toch verwacht wordt dat er waardevolle output gegeven wordt?
 Het principle wat het beste bij deze vraag past, is het Open/Closed Principle. Dit principle stelt dat bestaande code niet gewijzigd hoeft te worden 
@@ -113,9 +136,6 @@ Het pattern Adapter sluit perfect aan bij _Encapsulate what varies_ door die afs
 
 ###     7.1. Containers
 
-> [!IMPORTANT]
-> Voeg toe: Container Diagram plus een Dynamic Diagram van een aantal scenario's inclusief begeleidende tekst.
-
 ![Container Diagram Triptop](./images/containerdiagram.png)
 
 #### Boeken van een reis
@@ -150,9 +170,6 @@ Caching garandeert dat data beschikbaar blijft, zelfs als de externe service uit
 
 ###     7.2. Components
 
-> [!IMPORTANT]
-> Voeg toe: Component Diagram plus een Dynamic Diagram van een aantal scenario's inclusief begeleidende tekst.
-
 #### Backend (dynamic)
 ![Component Diagram Triptop backend](./images/backendcomponentdiagram.png)
 
@@ -181,11 +198,6 @@ Dit diagram toont hoe de applicatie gegevens ophaalt en caching toepast bij serv
 - Monitoring Service → Houdt beschikbaarheid en cache-efficiëntie bij.
 
 ###     7.3. Design & Code
-
-> [!IMPORTANT]
-> Voeg toe: Per ontwerpvraag een Class Diagram plus een Sequence Diagram van een aantal scenario's inclusief begeleidende tekst.
-
-Maak van de DB class een facade.
 
 ### Hoe zorg je dat een wijziging in een of meerdere APIs niet leidt tot een grote wijziging in de applicatie? 
 
@@ -369,8 +381,6 @@ Stap 15. Deze data gaat terug naar TripService
 Stap 16. De data wordt in de 'Applicatie weergegeven'
 
 Stap 17. **Customer** krijgt de informatie te zien op zijn scherm
-
-
 
 ## 8. Architectural Decision Records
 ### 8.1. ADR-001 API-keuzes voor reisapplicatie
