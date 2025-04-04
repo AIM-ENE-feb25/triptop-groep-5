@@ -110,12 +110,12 @@ In de context van de ADR bij deze vraag:
 ![Container Diagram Triptop reis boeken](./images/boekreiscontainerdiagram.png)
 
 #### Inloggen
-![Container Diagram Triptop inlog](./images/logincontainerdiagram.png)
+![Container Diagram Triptop inlog](images/logincontainerdiagram.png)
 
 ![Container Diagram Triptop betaalsystemen]
 
 #### Caching
-![Container Diagram Triptop caching](./images/cachingContainerDiagram.png)
+![Container Diagram Triptop caching](images/cachingContainerDiagram.png)
 Dit diagram toont hoe een webapplicatie gegevens opvraagt via een API Gateway, die verzoeken doorstuurt naar een backend service. De backend haalt gegevens op van een externe service of gebruikt MongoDB als cache om beschikbaarheid te garanderen bij storingen.
 
 - Gebruiker → Vraagt gegevens op via de Web Applicatie (Angular) 
@@ -136,10 +136,10 @@ Caching garandeert dat data beschikbaar blijft, zelfs als de externe service uit
 ![Component Diagram Triptop backend](./images/backendcomponentdiagram.png)
 
 #### Frontend (dynamic)
-![Component Diagram Triptop frontend](./images/frontendcomponentdiagram.png)
+![Component Diagram Triptop frontend](images/frontendcomponentdiagram.png)
 
 #### Caching
-![Component Diagram Triptop caching](./images/cachingComponentDiagram.png)
+![Component Diagram Triptop caching](images/cachingComponentDiagram.png)
 Dit diagram toont hoe de applicatie gegevens ophaalt en caching toepast bij service-onbeschikbaarheid.
 
 - Eindgebruiker → Vraagt gegevens op via de API-Gateway. 
@@ -156,20 +156,20 @@ De adapter is zo geschreven dat hij de data die van een externe service afkomt e
 de tripService verwacht door checkDataFormat(). Is die niet gelijk aan het verwachtte patroon dan wordt er geen data doorgestuurd. 
 Als oplossing voor dit probleem bestaat translateDataFormat(), daarmee zetten we de data om naar het juiste patroon, dit wordt wel doorgestuurd.
 
-![API Wijzigingen Opvangen](classDiagramTripTopAPIWijzigingOpvangen.png)
+![API Wijzigingen Opvangen](images/classDiagramTripTopAPIWijzigingOpvangen.png)
 
 
 ### Hoe maak je de applicatie uitbreidbaar met nieuwe bouwstenen?
 
 Door TripService() uit te breiden met TripServiceV2 kan er gemakkelijk extra functionaliteit toegevoegd worden aan de applicatie zonder al te veel te hoeven friemelen met de code die in gebruik is.
 
-![Uitbreidbaarheid](classDiagramTripTopUitbreidbaarheid.png)
+![Uitbreidbaarheid](images/classDiagramTripTopUitbreidbaarheid.png)
 
 ### Hoe zorg je ervoor dat je makkelijk een nieuwe externe service kan toevoegen?
 
 Door 'simpelweg' een nieuwe adapter aan de TripService te koppelen kan er een nieuwe externe service gekoppeld worden aan de applicatie
 
-![Service Toevoegen](classDiagramTripTopServiceToevoegen.png)
+![Service Toevoegen](images/classDiagramTripTopServiceToevoegen.png)
 
 ### Hoe ga je om met aanroepen van externe services die niet beschikbaar zijn en toch verwacht wordt dat er waardevolle output gegeven wordt?
 #### Design pattern
@@ -184,7 +184,7 @@ In de context van de ADR zou je een interface kunnen maken voor het ophalen van 
 dynamisch wisselen tussen deze strategieën, afhankelijk van de beschikbaarheid van de externe services.
 
 #### Class Diagram
-![Class diagram caching](./images/ClassdiagramCaching.png)
+![Class diagram caching](images/ClassdiagramCaching.png)
 
 Key components van dit diagram:
 1. `DataFetchStrategy` Interface: Dit is de kern van het Strategy Pattern. Het definieert een gemeenschappelijke interface voor alle strategieën om data op te halen, met de methode ```fetchData()```.
@@ -200,7 +200,7 @@ Key components van dit diagram:
 - `Datatype` <b>Enum</b>: categoriseert verschillende typen gegevens voor de juiste TTL-configuratie.
 
 #### Sequence Diagram
-![Sequence diagram caching](./images/sequenceDiagramCaching.png)
+![Sequence diagram caching](images/sequenceDiagramCaching.png)
 
 Stap voor stap uitleg:
 1. De Client vraagt data op bij DataFetchContext met de methode fetchData(requestParams).
