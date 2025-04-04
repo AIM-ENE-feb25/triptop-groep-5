@@ -17,7 +17,7 @@ TripService -> ExternalAccommodationAdapter: request()
 ExternalAccommodationAdapter -> OldBookingReviewAPI: externalRequest()
 OldBookingReviewAPI --> ExternalAccommodationAdapter: JSON response
 ExternalAccommodationAdapter -> ExternalAccommodationAdapter: transformDataToOutput(json, true)
-ExternalAccommodationAdapter --> TripService: Transformed Data
+ExternalAccommodationAdapter --> TripService: Original Data
 TripService --> Main: Response received
 Main --> Customer: Display response
 

@@ -98,6 +98,7 @@ Voordat deze casusomschrijving tot stand kwam, heeft de opdrachtgever de volgend
 
 ## 6. Principles
 
+
 #### Hoe ga je om met aanroepen van externe services die niet beschikbaar zijn en toch verwacht wordt dat er waardevolle output gegeven wordt?
 Het principle wat het beste bij deze vraag past, is het Open/Closed Principle. Dit principle stelt dat bestaande code niet gewijzigd hoeft te worden 
 om nieuwe functionaliteit toe te voegen. <br>
@@ -154,6 +155,9 @@ Dit diagram toont de interactie tussen de webapplicatie, API Gateway, backend se
 
 #### Vervangen externe API
 ![Container Diagram Triptop API Vervangen](./images/VervangenContainerDiagram.png)
+
+In dit diagram is te zien hoe een api vervangen wordt en volledig losgekoppeld kan worden na de sunset datum zonder dat er functionaliteit wegvalt omdat die is opgevangen door de nieuwe api.
+
 
 #### Caching
 ![Container Diagram Triptop caching](images/cachingContainerDiagram.png)
@@ -381,6 +385,8 @@ Stap 15. Deze data gaat terug naar TripService
 Stap 16. De data wordt in de 'Applicatie weergegeven'
 
 Stap 17. **Customer** krijgt de informatie te zien op zijn scherm
+
+
 
 ## 8. Architectural Decision Records
 ### 8.1. ADR-001 API-keuzes voor reisapplicatie
