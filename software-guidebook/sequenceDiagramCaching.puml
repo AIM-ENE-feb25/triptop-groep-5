@@ -1,0 +1,34 @@
+@startuml
+participant Client
+participant DataFetchContext
+participant StrategySelector
+participant DirectServiceStrategy
+participant CacheStrategy
+participant ServiceClient
+participant CacheProvider
+
+Client -> DataFetchContext: fetchData(requestParams)
+DataFetchContext -> StrategySelector: selectStrategy()
+StrategySelector -> ServiceClient: isServiceAvailable()
+alt Service is Available
+    StrategySelector -> DirectServiceStrategy: fetchData(requestParams)
+    DirectServiceStrategy -> ServiceClient: callService(requestParams)
+    ServiceClient --> DirectServiceStrategy: return Data
+    DirectServiceStrategy --> DataFetchContext: return Data
+else Service is Unavailable
+    StrategySelector -> CacheStrategy: fetchData(requestParams)
+    CacheStrategy -> CacheProvider: get(key)
+    alt Cache Hit
+        CacheProvider --> CacheStrategy: return Cached Data
+        CacheStrategy --> DataFetchContext: return Cached Data
+    else Cache Miss
+        CacheStrategy --> DirectServiceStrategy: fetchData(requestParams)
+        DirectServiceStrategy -> ServiceClient: callService(requestParams)
+        ServiceClient --> DirectServiceStrategy: return Data
+        DirectServiceStrategy -> CacheStrategy: return Data
+        CacheStrategy -> CacheProvider: put(key, data, ttl)
+        CacheStrategy --> DataFetchContext: return Data
+    end
+end
+DataFetchContext --> Client: return Data
+@enduml

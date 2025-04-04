@@ -76,14 +76,14 @@ Voordat deze casusomschrijving tot stand kwam, heeft de opdrachtgever de volgend
 > Beschrijf zelf de belangrijkste architecturele en design principes die zijn toegepast in de software.
 
 #### Hoe ga je om met aanroepen van externe services die niet beschikbaar zijn en toch verwacht wordt dat er waardevolle output gegeven wordt?
-Het principle wat het beste bij deze vraag past, is het Open/Closed Principle. Dit priciple stelt dat bestaande code niet gewijzigd hoeft te worden 
+Het principle wat het beste bij deze vraag past, is het Open/Closed Principle. Dit principle stelt dat bestaande code niet gewijzigd hoeft te worden 
 om nieuwe functionaliteit toe te voegen. <br>
 In de context van de ADR bij deze vraag:
 - De caching-strategie laat het systeem uitbreidbaar zijn voor verschillende soorten gegevens en verschillende vervaltijden, zonder de kernfunctionaliteit te verwijderen.
 - Het systeem kan nieuwe caching-regels toevoegen zonder bestaande implementaties te verstoren.
 - Wanneer nieuwe externe services worden toegevoegd, kan het caching-mechanisme hierop worden toegepast zonder dat de basisarchitectuur verandert.
 
-Bovendien maakt dit principe het mgoelijk om in de toekomst eenvoudig andere fallback-strategieën toe te voegen, zonder dat de kernfunctionaliteit van de applicatie
+Bovendien maakt dit principe het mogelijk om in de toekomst eenvoudig andere fallback-strategieën toe te voegen, zonder dat de kernfunctionaliteit van de applicatie
 hoeft te worden aangepast. Het systeem blijft gesloten voor wijzigingen in bestaande componenten, maar open voor uitbreiding met nieuwe caching-regels of strategieën.
 
 #### Hoe kunnen we verschillende betalingssystemen integreren voor de verschillende bouwstenen?
@@ -105,18 +105,50 @@ In de context van de ADR bij deze vraag:
 > Voeg toe: Container Diagram plus een Dynamic Diagram van een aantal scenario's inclusief begeleidende tekst.
 
 ![Container Diagram Triptop](./images/containerdiagram.png)
+
+#### Boeken van een reis
 ![Container Diagram Triptop reis boeken](./images/boekreiscontainerdiagram.png)
+
+#### Inloggen
 ![Container Diagram Triptop inlog](./images/logincontainerdiagram.png)
+
 ![Container Diagram Triptop betaalsystemen]
+
+#### Caching
+![Container Diagram Triptop caching](./images/cachingContainerDiagram.png)
+Dit diagram toont hoe een webapplicatie gegevens opvraagt via een API Gateway, die verzoeken doorstuurt naar een backend service. De backend haalt gegevens op van een externe service of gebruikt MongoDB als cache om beschikbaarheid te garanderen bij storingen.
+
+- Gebruiker → Vraagt gegevens op via de Web Applicatie (Angular) 
+- API Gateway → Routeert verzoeken naar de Backend Service (Spring Boot)
+- Backend Service → Behandelt verzoeken, haalt gegevens op en implementeert caching 
+- MongoDB → Slaat data en cache op met TTL-indexen 
+- Externe Service → Bronnen van originele gegevens 
+- Monitoring (Prometheus/Grafana) → Houdt systeemprestaties en servicebeschikbaarheid bij
+
+Caching garandeert dat data beschikbaar blijft, zelfs als de externe service uitvalt.
 
 ###     7.2. Components
 
 > [!IMPORTANT]
 > Voeg toe: Component Diagram plus een Dynamic Diagram van een aantal scenario's inclusief begeleidende tekst.
 
+#### Backend (dynamic)
 ![Component Diagram Triptop backend](./images/backendcomponentdiagram.png)
+
+#### Frontend (dynamic)
 ![Component Diagram Triptop frontend](./images/frontendcomponentdiagram.png)
 
+#### Caching
+![Component Diagram Triptop caching](./images/cachingComponentDiagram.png)
+Dit diagram toont hoe de applicatie gegevens ophaalt en caching toepast bij service-onbeschikbaarheid.
+
+- Eindgebruiker → Vraagt gegevens op via de API Gateway. 
+- Data Service → Bepaalt via de Strategy Selector of data direct wordt opgehaald of uit de cache komt. 
+- Service Client → Haalt data op bij de Externe Service als deze beschikbaar is. 
+- Cache Manager → Gebruikt de Cache Database (MongoDB) als back-up bij service-uitval. 
+- Monitoring Service → Houdt beschikbaarheid en cache-efficiëntie bij.
+
+> [!IMPORTANT]
 frontend redux store moeten in slices
 
 ###     7.3. Design & Code
@@ -124,6 +156,7 @@ frontend redux store moeten in slices
 > [!IMPORTANT]
 > Voeg toe: Per ontwerpvraag een Class Diagram plus een Sequence Diagram van een aantal scenario's inclusief begeleidende tekst.
 
+> [!IMPORTANT]
 Maak van de DB class een facade.
 
 ### Hoe zorg je dat een wijziging in een of meerdere APIs niet leidt tot een grote wijziging in de applicatie? 
@@ -133,7 +166,6 @@ de tripService verwacht door checkDataFormat(). Is die niet gelijk aan het verwa
 Als oplossing voor dit probleem bestaat translateDataFormat(), daarmee zetten we de data om naar het juiste patroon, dit wordt wel doorgestuurd.
 
 ![API Wijzigingen Opvangen](classDiagramTripTopAPIWijzigingOpvangen.png)
-#### [Sequence Diagram]
 
 
 ### Hoe maak je de applicatie uitbreidbaar met nieuwe bouwstenen?
@@ -141,16 +173,12 @@ Als oplossing voor dit probleem bestaat translateDataFormat(), daarmee zetten we
 Door TripService() uit te breiden met TripServiceV2 (w.i.p. naam) kan er gemakkelijk extra functionaliteit toegevoegd worden aan de applicatie zonder al te veel te hoeven friemelen met de code die in gebruik is.
 
 ![Uitbreidbaarheid](classDiagramTripTopUitbreidbaarheid.png)
-#### [Sequence Diagram]
-
-
 
 ### Hoe zorg je ervoor dat je makkelijk een nieuwe externe service kan toevoegen?
 
 Door 'simpelweg' een nieuwe adapter aan de TripService te koppelen kan er een nieuwe externe service gekoppeld worden aan de applicatie
 
 ![Service Toevoegen](classDiagramTripTopServiceToevoegen.png)
-#### [Sequence Diagram]
 
 ### Hoe ga je om met aanroepen van externe services die niet beschikbaar zijn en toch verwacht wordt dat er waardevolle output gegeven wordt?
 #### Design pattern
@@ -167,7 +195,7 @@ dynamisch wisselen tussen deze strategieën, afhankelijk van de beschikbaarheid 
 #### Class Diagram
 ![Class diagram caching](./images/ClassdiagramCaching.png)
 
-Key components van deze diagram:
+Key components van dit diagram:
 1. `DataFetchStrategy` Interface: Dit is de kern van het Strategy Pattern. Het definieert een gemeenschappelijke interface voor alle strategieën om data op te halen, met de methode ```fetchData()```.
 2. Concrete strategieën:
 - `DirectServiceStrategy`: Haalt gegevens rechtstreeks op via de externe service wanneer deze beschikbaar is.
@@ -180,6 +208,36 @@ Key components van deze diagram:
 - `RequestParams`: Bevat de parameters voor het verzoek, inclusief het type data dat wordt opgevraagd.
 - `Datatype` <b>Enum</b>: categoriseert verschillende typen gegevens voor de juiste TTL-configuratie.
 
+#### Sequence Diagram
+![Sequence diagram caching](./images/sequenceDiagramCaching.png)
+
+Stap voor stap uitleg:
+1. De Client vraagt data op bij DataFetchContext met de methode fetchData(requestParams).
+
+2. DataFetchContext bepaalt welke strategie gebruikt moet worden door StrategySelector aan te roepen.
+
+3. StrategySelector controleert of de externe service beschikbaar is door isServiceAvailable() aan ServiceClient te vragen.
+
+4. Als de service beschikbaar is:
+- StrategySelector kiest DirectServiceStrategy.
+- DirectServiceStrategy roept callService(requestParams) aan op ServiceClient.
+- ServiceClient levert de gevraagde data terug.
+- DirectServiceStrategy stuurt de data terug naar DataFetchContext, die het vervolgens naar de Client retourneert.
+
+5. Als de service niet beschikbaar is:
+- StrategySelector kiest CacheStrategy.
+- CacheStrategy controleert bij CacheProvider of de data al in de cache zit met get(key).
+- Als de data in de cache zit (cache hit):
+  - CacheProvider retourneert de cached data.
+  - CacheStrategy stuurt deze data door naar DataFetchContext, die het teruggeeft aan de Client.
+- Als de data niet in de cache zit (cache miss):
+  - CacheStrategy schakelt over naar DirectServiceStrategy om alsnog de data op te halen.
+  - DirectServiceStrategy roept callService(requestParams) aan op ServiceClient.
+  - ServiceClient retourneert de data.
+  - DirectServiceStrategy stuurt de data door naar CacheStrategy.
+  - CacheStrategy slaat de data op in CacheProvider met een bepaalde tijd-tot-leven (TTL).
+  - CacheStrategy retourneert de data naar DataFetchContext, die het terugstuurt naar de Client.
+  
 ### Hoe kunnen we verschillende betalingssystemen integreren voor de verschillende bouwstenen?
 #### Design pattern
 Het <b>Strategy pattern + factory pattern</b> is ideaal in dit scenario, omdat:
