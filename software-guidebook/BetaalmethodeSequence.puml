@@ -1,18 +1,28 @@
 @startuml
+title Sequence Diagram - Betalingsverzoek
+
 actor Gebruiker
+participant "Webapp (frontend)" as WebApp
 participant "BetaalController" as Controller
 participant "BetaalStrategieFactory" as Factory
+participant "BetaalStrategie (interface)" as Strategie
 participant "PaypalBetaling" as Paypal
 participant "PayPal API" as PayPalAPI
 
-Gebruiker -> Controller : POST /betalen (BetalingRequest)
+Gebruiker -> WebApp : Selecteer reis + betaalmethode\nKlik op 'Betaal'
+WebApp -> Controller : POST /betalen { methode: "paypal", bedrag: ... }
+
 Controller -> Factory : maakStrategie("paypal")
-Factory -> Paypal : new PaypalBetaling()
+Factory -> Paypal : return nieuwe PaypalBetaling()
 
-Controller -> Paypal : verwerkBetaling(BetalingRequest)
-Paypal -> PayPalAPI : create(payment)
-PayPalAPI --> Paypal : Payment (met redirect URLs)
-Paypal -> Controller : (log: redirect gebruiker naar PayPal)
+Controller -> Strategie : verwerkBetaling(request)
+activate Strategie
+Strategie -> PayPalAPI : API-aanroep om betaling uit te voeren
+PayPalAPI --> Strategie : bevestiging betaling
+deactivate Strategie
 
-Controller --> Gebruiker : "Betaling succesvol gestart via paypal"
+Strategie --> Controller : resultaat (success / error)
+Controller --> WebApp : HTTP 200 / foutmelding
+WebApp --> Gebruiker : Toon bevestiging / foutmelding
+
 @enduml

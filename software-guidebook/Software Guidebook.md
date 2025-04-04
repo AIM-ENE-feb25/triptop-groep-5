@@ -111,8 +111,15 @@ In de context van de ADR bij deze vraag:
 
 #### Inloggen
 ![Container Diagram Triptop inlog](images/logincontainerdiagram.png)
+#### Betalingssystemen
+![Container Diagram Triptop betaalsystemen](images/betaalsysteemcontainerdiagram.png)
+Dit diagram toont de interactie tussen de webapplicatie, API Gateway, backend service en externe services voor het betalen van een reis. Het laat ook zien hoe de applicatie omgaat met verschillende betalingssystemen.
 
-![Container Diagram Triptop betaalsystemen]
+- Reiziger → Vraagt gegevens op via de Web Applicatie (Angular)
+- Web applicatie -> verstuurt verzoeken naar Spring Boot webapp (HTTP)
+- Spring boot webapp -> Verstuurt verzoeken door naar de controller.
+- Betaalcontroller -> Verwerkt verzoeken en roept de juiste adapter aan.
+- BetaalStrategyFactory -> Maakt de juiste adapter aan op basis van de gekozen betaalmethode.
 
 #### Caching
 ![Container Diagram Triptop caching](images/cachingContainerDiagram.png)
@@ -137,6 +144,17 @@ Caching garandeert dat data beschikbaar blijft, zelfs als de externe service uit
 
 #### Frontend (dynamic)
 ![Component Diagram Triptop frontend](images/frontendcomponentdiagram.png)
+
+#### Betalingssystemen
+![Component Diagram Triptop betaalsystemen](images/betaalsysteemcomponentdiagram.png)
+Dit diagram toont de interactie tussen de webapplicatie, API Gateway, backend service en externe services voor het betalen van een reis. Het laat ook zien hoe de applicatie omgaat met verschillende betalingssystemen.
+- Reiziger → Vraagt gegevens op via de Web Applicatie (Angular).
+- Betaalcontroller → Verwerkt inkomende HTTP-verzoeken en start het betalingsproces.
+- BetaalStrategyFactory → Bepaalt en instantieert de juiste strategie op basis van de gekozen betaalmethode.
+- BetaalStrategy → Interface die de gemeenschappelijke logica definieert voor alle betaalstrategieën.
+- paypalBetaling → Concrete implementatie van BetaalStrategie, verwerkt betaling via de PayPal API.
+- iDealBetaling → Concrete implementatie van BetaalStrategie, verwerkt betaling via de iDEAL API.
+- creditcardBetaling → Concrete implementatie van BetaalStrategie, verwerkt betaling via een creditcarddienst.
 
 #### Caching
 ![Component Diagram Triptop caching](images/cachingComponentDiagram.png)
@@ -238,6 +256,30 @@ Het <b>Strategy pattern + factory pattern</b> is ideaal in dit scenario, omdat:
 
 In de context van de ADR zou je een interface kunnen maken voor de betaalstrategieën, met concrete implementaties voor elke betaalmethode. De factory kan dan de juiste strategie instantiëren op basis van de gebruikerskeuze of configuratie.
 #### Class Diagram
+![Class diagram betalingssystemen](images/betaalsysteemclassdiagram.png)
+
+Key components van dit diagram:
+1. `BetaalStrategy` Interface: Dit is de kern van het Strategy Pattern. Het definieert een gemeenschappelijke interface voor alle betaalstrategieën, met de methode ```verwerkBetaling()```.
+2. `Betaalcontainer` Klasse: Dit is de controller die verantwoordelijk is voor het afhandelen van de REST aanvragen van de betalingen. Het maakt gebruik van de `BetaalStrategyFactory` om de juiste strategie te kiezen.
+3. `BetaalStrategyFactory`: Bevat de logica om op basis van gebruikersinput (zoals "paypal") de juiste implementatie van BetaalStrategie terug te geven.
+4. `BetalingsRequest` Klasse: Een DTO (Data Transfer Object) die de gegevens bevat die nodig zijn voor een betaling.
+5. `idealBetaling`, `creditcardBetaling`, `paypalBetaling`: Dit zijn concrete implementaties van de `BetaalStrategy` interface. Elke klasse implementeert de specifieke logica voor het verwerken van betalingen via de betreffende betaalmethode.
+
+#### Sequence Diagram
+![Sequence diagram betalingssystemen](images/betaalsysteemsequencediagram.png)
+Stap voor stap uitleg:
+1. De reiziger start een betaling via de webinterface. De frontend stuurt een POST /betalen verzoek naar de BetaalController met o.a. de gekozen betaalmethode en het bedrag.
+2. BetaalController ontvangt het verzoek en roept de methode maakStrategie(methode) aan op BetaalStrategieFactory om te bepalen welke strategie gebruikt moet worden.
+3. BetaalStrategieFactory bepaalt op basis van de methode-parameter (bijvoorbeeld "paypal") welke implementatie van BetaalStrategie moet worden teruggegeven:
+- Bij "paypal" wordt PaypalBetaling gekozen.
+- Bij "ideal" wordt IdealBetaling gekozen.
+- Bij "creditcard" wordt CreditcardBetaling gekozen.
+4. De gekozen concrete strategie (PaypalBetaling, IdealBetaling of CreditcardBetaling) wordt teruggegeven aan de controller.
+5. BetaalController voert vervolgens de methode verwerkBetaling(BetalingsRequest) uit op de gekozen strategie. Deze methode implementeert de concrete logica voor het uitvoeren van de betaling.
+6. De strategie maakt een API-aanroep naar de externe betaaldienst (zoals PayPal API of iDEAL API) om de betaling uit te voeren.
+7. De externe betaaldienst retourneert een antwoord
+8. De concrete strategie stuurt het resultaat van de betaling terug naar de BetaalController.
+9. BetaalController retourneert de uiteindelijke HTTP-response of foutmelding naar de frontend, die deze toont aan de gebruiker als betaalbevestiging of foutmelding.
 
 
 ## 8. Architectural Decision Records

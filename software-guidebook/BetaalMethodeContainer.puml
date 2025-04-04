@@ -1,32 +1,37 @@
-@startuml
+@startuml "C4 Container Diagram - Toepassing Betalingsproces"
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-LAYOUT_TOP_DOWN()
 
-' Personen
-Person(user, "Gebruiker", "Iemand die een betaling wil starten via de app")
+LAYOUT_WITH_LEGEND()
 
-' Systeem
-System_Boundary(s1, "BetaalmethodeDemo") {
+title "C4 Container Diagram - Toepassing Betalingsproces"
+Person(reiziger, "Reiziger", "Een persoon die een reis boekt en wil betalen")
 
-  Container(webApp, "Spring Boot Webapp", "Java + Spring Boot", "Verwerkt HTTP-verzoeken en start betalingen")
-  Container(controller, "BetaalController", "Spring REST Controller", "Ontvangt betaalverzoeken en roept strategieën aan")
-  Container(factory, "BetaalStrategieFactory", "Java class", "Selecteert de juiste betaalstrategie op basis van methode")
-  Container(strategie, "BetaalStrategieën", "Java interface + implementaties", "Implementeert betaalgedrag: iDEAL, PayPal, Creditcard")
+System_Boundary(triptopSysteem, "TripTop Applicatie") {
+    Container(webApp, "Web Applicatie", "JavaScript/react","Gebruikersinterface waarmee de reiziger een reis boekt en een betaalmethode kiest")
+
+    Container(apiGateway, "Spring Boot Webapp", "Java/Spring Boot","Bevat REST-endpoints die betaalverzoeken ontvangen")
+
+    Container(controller, "BetaalController", "Spring REST Controller","Verwerkt het betaalverzoek en activeert de juiste strategie via een factory")
+
+    Container(factory, "BetaalStrategieFactory", "Java Factory","Creëert de juiste strategie op basis van de gekozen betaalmethode")
+
+    Container(strategie, "BetaalStrategieën", "Java Interfaces + Implementaties","Implementeert concrete strategieën zoals PayPal, iDEAL, Creditcard")
 }
 
-System_Ext(paypal, "PayPal API", "Externe betaalsysteem")
-System_Ext(ideal, "iDEAL API", "Externe betaalsysteem")
-System_Ext(cc, "Creditcard API", "Externe betaalsysteem")
+System_Ext(paypalAPI, "PayPal API", "Externe betaaldienst")
+System_Ext(idealAPI, "iDEAL API", "Externe betaaldienst")
+System_Ext(ccAPI, "Creditcard API", "Externe betaaldienst")
 
-' Relaties
-Rel(user, webApp, "Stuurt HTTP POST-verzoek met betaalgegevens")
-
-Rel(webApp, controller, "Maakt REST-call intern naar")
-Rel(controller, factory, "Vraagt juiste strategie op via")
-Rel(factory, strategie, "Creëert instantie van")
-
-Rel(strategie, paypal, "Verbindt bij gebruik van PaypalBetaling", "HTTPS")
-Rel(strategie, ideal, "Verbindt bij gebruik van IdealBetaling", "HTTPS")
-Rel(strategie, cc, "Verbindt bij gebruik van CreditcardBetaling", "HTTPS")
+Rel(reiziger, webApp, "Kiest reis en selecteert betaalmethode")
+Rel(webApp, apiGateway, "Stuurt HTTP POST met betaalgegevens")
+Rel(apiGateway, controller, "Routeert verzoek naar controller")
+Rel(controller, factory, "Vraagt juiste strategie op (bv. 'paypal')")
+Rel(factory, strategie, "Creëert en retourneert juiste implementatie")
+Rel(strategie, paypalAPI, "Verwerkt betaling via PayPal (indien gekozen)")
+Rel(strategie, idealAPI, "Verwerkt betaling via iDEAL (indien gekozen)")
+Rel(strategie, ccAPI, "Verwerkt betaling via Creditcard (indien gekozen)")
+Rel(controller, apiGateway, "Ontvangt resultaat en status")
+Rel(apiGateway, webApp, "Geeft terugkoppeling aan gebruiker")
+Rel(webApp, reiziger, "Toont bevestiging van succesvolle betaling")
 
 @enduml

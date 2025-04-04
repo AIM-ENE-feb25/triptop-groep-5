@@ -1,0 +1,48 @@
+@startuml "TripTop - Class Diagram Betalingssysteem"
+
+class BetaalController {
+  +verwerkBetaling(BetalingsRequest): ResponseEntity
+}
+
+class BetaalStrategieFactory {
+  +maakStrategie(methode: String): BetaalStrategie
+}
+
+class BetalingsRequest {
+  - methode: String
+  - bedrag: double
+  + getMethode(): String
+  + setMethode(String)
+  + getBedrag(): double
+  + setBedrag(double)
+}
+
+interface BetaalStrategie {
+  + verwerkBetaling(request: BetalingsRequest): void
+}
+
+class PaypalBetaling {
+  + verwerkBetaling(request: BetalingsRequest): void
+}
+
+class IdealBetaling {
+  + verwerkBetaling(request: BetalingsRequest): void
+}
+
+class CreditcardBetaling {
+  + verwerkBetaling(request: BetalingsRequest): void
+}
+
+BetaalStrategie <|.. PaypalBetaling
+BetaalStrategie <|.. IdealBetaling
+BetaalStrategie <|.. CreditcardBetaling
+
+BetaalController --> BetaalStrategieFactory : gebruikt
+BetaalController --> BetalingsRequest : ontvangt
+BetaalController --> BetaalStrategie : gebruikt
+BetaalStrategieFactory --> BetaalStrategie : retourneert
+BetaalStrategieFactory --> PaypalBetaling : instantieert bij "paypal"
+BetaalStrategieFactory --> IdealBetaling : instantieert bij "ideal"
+BetaalStrategieFactory --> CreditcardBetaling : instantieert bij "creditcard"
+
+@enduml
