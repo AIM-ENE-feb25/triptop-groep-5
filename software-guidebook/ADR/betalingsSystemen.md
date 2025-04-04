@@ -1,11 +1,11 @@
-# ADR Betalings systemen
+# ADR Betalings systemen en de design patterns van de implementatie
 ## Datum: 2025-03-28
 
 ## Status
-Voorgesteld
+Geaccepteerd
 
 ## Context
-Om de gebruikers van de Triptop-applicatie vrijheid te geven in hun betalingskeuze moeten er verschillende betalingssystemen worden ondersteund. Om dat ze makkelijk moggelijk te maken willen dat er verschillende betaalmethoden als bouwstenen kunnen toegevoegd worden.
+Om de gebruikers van de Triptop-applicatie vrijheid te geven in hun betalingskeuze moeten er verschillende betalingssystemen worden ondersteund. Om dat zo makkelijk moggelijk te maken willen dat er verschillende betaalmethoden als bouwstenen kunnen toegevoegd worden.
 Het systeen moet:
 - Flexibel zijn om verschillende betalingssystemen te ondersteunen.
 - Herbruikbaar en onderhoudbaar blijven.
@@ -14,20 +14,20 @@ Het systeen moet:
 ## Considered Options
 ### Betalingssystemen
 | Forces                       | PayPal | iDEAL | Creditcard | Apple Pay | Google Pay | Alipay |
-|------------------------------|--------|-------|------------|-----------|-----------|--------|
-| Beschikbaarheid in Nederland | ++     | ++    | ++         | ++        | ++        | --     |
-| Gebruikers Nederland         | ++     |++| +          | 0         |-| --     |
-| Wereldwijde dekking          |+|--|++|+|+| 0      |
-| Gebruiksgemak                |++|++|++|++|++| -      |
-| Kosten                       |+|++|0|0|0| -      |
+|------------------------------|--------|-------|------------|-----------|------------|--------|
+| Beschikbaarheid in Nederland | ++     | ++    | ++         | ++        | ++         | --     |
+| Gebruikers Nederland         | ++     | ++    | +          | 0         | -          | --     |
+| Wereldwijde dekking          | +      | --    | ++         | +         | +          | 0      |
+| Gebruiksgemak                | ++     | ++    | ++         | ++        | ++         | -      |
+| Kosten                       | +      | ++    | 0          | 0         | 0          | -      |
 
 ### Design Patterns
 | Forces                              | Strategy + Factory | Template method | Command | Decorator | Abstract Factory |
-|-------------------------------------|--------------------|----------------|---------|-----------|------------------|
-| Uitbreidbaarheid                    | ++                 | -              | 0       | -         | +                |
-| Herbruikbaarheid                    | ++                 | +              | +       | 0         | +                |
-| Scheiding van verantwoordelijkheden | ++                 | -              | 0       | 0         | +                |
-| Implementatiecomplexiteit           | ++                 |+| 0       |0| --               |
+|-------------------------------------|--------------------|-----------------|---------|-----------|------------------|
+| Uitbreidbaarheid                    | ++                 | -               | 0       | -         | +                |
+| Herbruikbaarheid                    | ++                 | +               | +       | 0         | +                |
+| Scheiding van verantwoordelijkheden | ++                 | -               | 0       | 0         | +                |
+| Implementatiecomplexiteit           | ++                 | +               | 0       | 0         | --               |
 
 
 ## Decision
@@ -46,8 +46,8 @@ We kiezen voor **Strategy** in combinatie met **Factory** als design pattern voo
 ### Risico's en beperkingen:
 - Het toevoegen van nieuwe betaalmethoden kan extra ontwikkelingstijd vereisen.
 - Het onderhouden van meerdere betaalmethoden kan complexiteit toevoegen aan de applicatie.
-- Iets meer code-infrastructuur nodig: extra klassen per betaalmethode en een factory
-- Factory is gevoelig voor typfouten (bijv. "paypal" vs "PayPal") tenzij met enum of mapping gewerkt wordt
+- Iets meer code-infrastructuur nodig: extra klassen per betaalmethode en een factory.
+- Factory is gevoelig voor typfouten (bijv. "paypal" vs "PayPal") tenzij er met enum of mapping gewerkt wordt.
 
 
 
