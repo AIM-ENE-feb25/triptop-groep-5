@@ -161,7 +161,7 @@ Als oplossing voor dit probleem bestaat translateDataFormat(), daarmee zetten we
 
 ### Hoe maak je de applicatie uitbreidbaar met nieuwe bouwstenen?
 
-Door TripService() uit te breiden met TripServiceV2 (w.i.p. naam) kan er gemakkelijk extra functionaliteit toegevoegd worden aan de applicatie zonder al te veel te hoeven friemelen met de code die in gebruik is.
+Door TripService() uit te breiden met TripServiceV2 kan er gemakkelijk extra functionaliteit toegevoegd worden aan de applicatie zonder al te veel te hoeven friemelen met de code die in gebruik is.
 
 ![Uitbreidbaarheid](classDiagramTripTopUitbreidbaarheid.png)
 
