@@ -1,7 +1,7 @@
 @startuml
 title Sequence Diagram - Betalingsverzoek
 
-actor Gebruiker
+actor Reiziger
 participant "Webapp (frontend)" as WebApp
 participant "BetaalController" as Controller
 participant "BetaalStrategieFactory" as Factory
@@ -9,7 +9,7 @@ participant "BetaalStrategie (interface)" as Strategie
 participant "PaypalBetaling" as Paypal
 participant "PayPal API" as PayPalAPI
 
-Gebruiker -> WebApp : Selecteer reis + betaalmethode\nKlik op 'Betaal'
+Reiziger -> WebApp : Selecteer reis + betaalmethode\nKlik op 'Betaal'
 WebApp -> Controller : POST /betalen { methode: "paypal", bedrag: ... }
 
 Controller -> Factory : maakStrategie("paypal")
@@ -23,6 +23,6 @@ deactivate Strategie
 
 Strategie --> Controller : resultaat (success / error)
 Controller --> WebApp : HTTP 200 / foutmelding
-WebApp --> Gebruiker : Toon bevestiging / foutmelding
+WebApp --> Reiziger : Toon bevestiging / foutmelding
 
 @enduml

@@ -132,6 +132,8 @@ Dit diagram toont de interactie tussen de webapplicatie, API Gateway, backend se
 - Betaalcontroller -> Verwerkt verzoeken en roept de juiste adapter aan.
 - BetaalStrategyFactory -> Maakt de juiste adapter aan op basis van de gekozen betaalmethode.
 ![Container Diagram Triptop betaalsystemen]
+
+#### Vervangen externe API
 ![Container Diagram Triptop API Vervangen](./images/VervangenContainerDiagram.png)
 
 #### Caching
@@ -222,7 +224,7 @@ dynamisch wisselen tussen deze strategieën, afhankelijk van de beschikbaarheid 
 #### Class Diagram
 ![Class diagram caching](./images/ClassdiagramCaching.png)
 
-Key components van deze diagram:
+Key components van dit diagram:
 1. `DataFetchStrategy` Interface: Dit is de kern van het Strategy Pattern. Het definieert een gemeenschappelijke interface voor alle strategieën om data op te halen, met de methode ```fetchData()```.
 2. Concrete strategieën:
 - `DirectServiceStrategy`: Haalt gegevens rechtstreeks op via de externe service wanneer deze beschikbaar is.

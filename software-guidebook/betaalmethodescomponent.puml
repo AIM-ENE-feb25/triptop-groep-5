@@ -5,9 +5,9 @@ LAYOUT_WITH_LEGEND()
 
 title "C4 Component Diagram - betalingsproces"
 
-Person(user, "Gebruiker", "Boekt een reis en voert een betaling uit via de webinterface")
+Person(reiziger, "Reiziger", "Boekt een reis en voert een betaling uit via de webinterface")
 
-Container_Boundary(backend, "Spring Boot Backend") {
+Container_Boundary(applicatieSysteem, "Applicatie systeem") {
 
   Component(controller, "BetaalController", "REST Controller","Ontvangt HTTP-verzoeken van de frontend en start het betalingsproces")
 
@@ -26,7 +26,7 @@ System_Ext(paypalAPI, "PayPal API", "Verwerkt betaling via PayPal")
 System_Ext(idealAPI, "iDEAL API", "Verwerkt betaling via iDEAL")
 System_Ext(ccAPI, "Creditcard API", "Verwerkt betaling via Creditcard")
 
-Rel(user, controller, "POST /betalen")
+Rel(reiziger, controller, "POST /betalen")
 Rel(controller, factory, "Vraagt strategie op")
 Rel(factory, paypal, "Retourneert bij methode='paypal'")
 Rel(factory, ideal, "Retourneert bij methode='ideal'")

@@ -19,7 +19,6 @@ System_Boundary(applicatie, "Applicatie") {
 
     Component(cacheManagerComp, "Cache Manager", "Java/MongoDB Client", "Beheert het opslaan en ophalen van gecachete gegevens")
 
-    Component(monitoringComp, "Monitoring Service", "Java/Micrometer", "Houdt metrics bij over service-beschikbaarheid en cache-effectiviteit")
 }
 
 System_Ext(externalService, "Externe Service", "Levert gegevens die de applicatie nodig heeft")
@@ -35,7 +34,5 @@ Rel(dataService, serviceClientComp, "Haalt gegevens op via", "Method call")
 Rel(dataService, cacheManagerComp, "Haalt cache-gegevens op via", "Method call")
 Rel(serviceClientComp, externalService, "Roept aan", "HTTP/JSON")
 Rel(cacheManagerComp, cacheDb, "Leest van/schrijft naar", "MongoDB Protocol")
-Rel(serviceClientComp, monitoringComp, "Rapporteert beschikbaarheid aan", "Events")
-Rel(cacheManagerComp, monitoringComp, "Rapporteert cache metrics aan", "Events")
 
 @enduml
