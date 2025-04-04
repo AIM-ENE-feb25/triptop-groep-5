@@ -2,7 +2,7 @@
 
 autonumber
 
-actor User
+actor Customer
 participant Main
 participant TripService
 participant ExternalAccommodationAdapter
@@ -11,7 +11,7 @@ participant NewBookingReviewAPI
 
 == Oude API ==
 
-User -> Main: start application
+Customer -> Main: start application
 Main -> TripService: requestAvailability (Old API)
 TripService -> ExternalAccommodationAdapter: request()
 ExternalAccommodationAdapter -> OldBookingReviewAPI: externalRequest()
@@ -19,7 +19,7 @@ OldBookingReviewAPI --> ExternalAccommodationAdapter: JSON response
 ExternalAccommodationAdapter -> ExternalAccommodationAdapter: transformDataToOutput(json, true)
 ExternalAccommodationAdapter --> TripService: Transformed Data
 TripService --> Main: Response received
-Main --> User: Display response
+Main --> Customer: Display response
 
 == Nieuwe API ==
 
@@ -30,6 +30,6 @@ NewBookingReviewAPI --> ExternalAccommodationAdapter: JSON response
 ExternalAccommodationAdapter -> ExternalAccommodationAdapter: transformDataToOutput(json, false)
 ExternalAccommodationAdapter --> TripService: Transformed Data
 TripService --> Main: Response received
-Main --> User: Display response
+Main --> Customer: Display response
 
 @enduml

@@ -108,6 +108,7 @@ In dit geval hoef je in principe alleen de adapter aan te passen als er een grot
 
 Het pattern Adapter sluit perfect aan bij _Encapsulate what varies_ door die afscherming te zijn voor het hoofdprogramma
  waarin de aanpassingen kunnen worden gedaan en eventuele onverwachtheden in kunnen worden opgevangen.
+
 ## 7. Software Architecture
 
 ###     7.1. Containers
@@ -300,6 +301,77 @@ Stap voor stap uitleg:
 7. De externe betaaldienst retourneert een antwoord
 8. De concrete strategie stuurt het resultaat van de betaling terug naar de BetaalController.
 9. BetaalController retourneert de uiteindelijke HTTP-response of foutmelding naar de frontend, die deze toont aan de gebruiker als betaalbevestiging of foutmelding.
+
+### Hoe zorg je dat een wijziging in een of meerdere APIs niet leidt tot een grote wijziging in de applicatie? Specifieker: hoe zorg je ervoor dat een wijziging in de API van een externe service niet leidt tot een wijziging in de front-end maar flexibel kan worden opgevangen door de back-end?
+
+In mijn ADR (8.8) heb ik onderzoek gedaan naar een aantal mogelijke opties om deze ontwerpvraag te beantwoorden,
+zoals daar ook staat ben ik uitgekomen op 2 opties: De API vervangen en VPN/Tunneling.
+Uiteindelijk heb ik gekozen voor Vervanging mede omdat deze oplossing het probleem daadwerkelijk verhelpt in plaats van omzeilt.
+Verdere beredenering is in het ADR te vinden. 
+
+#### Design Pattern
+Ik heb gekozen voor het Pattern: Adapter
+De adapter is een goede keuze omdat het een tussenlaag is tussen de backend en de buitenwereld, hierin kunnen wij een vertaallaag stoppen om zo het vervangen van een api te vergemakkelijken.
+In deze adapter kunnen wij zodra een nieuwe versie van een api wordt aangekondigd functionaliteit inbouwen voor de vernieuwde variant zonder de oude te hoeven laten vallen.
+Daarna houden wij de functionaliteit om met de versie te communiceren die wij op dat moment het beste achtten (aan de hand van bvb behoefte vanuit de opdrachtgever of evt. problemen met de nieuwe versie).
+In principe kunnen wij dit volhouden tot de oude api 'ge-sunset' wordt, maar ivm de veiligheidsrisico's die in de onderzoeksvraag staan raden wij dit af.
+Het idee van de Adapter hier is een soepele overgang bieden tussen API versies zonder onnodig downtime te hoeven ervaren.
+
+#### Class Diagram
+
+![Class Diagram Vervangen API](./images/VervangenClassDiagram.png)
+
+In deze class diagram staat aangegeven hoe de Adapter te werk moet gaan. Je geeft mee welke API er gebruikt moet worden in de vorm van een Boolean, 
+waarna de Adapter die api gebruikt en (als nodig) omzet naar wat TripService verwacht qua data.
+
+
+#### Sequence Diagram 
+
+![Sequence Diagram Vervangen API](./images/VervangenSequenceDiagram.png)
+
+##### Stap voor stap
+
+##### Start (oude API)
+Stap 1. **Customer** start de 'Applicatie'.
+
+Stap 2. De applicatie haalt accommodatiegegevens op via de Oude API
+
+Stap 3. TripService vraagt om de gegevens aan de Adapter
+
+Stap 4. De adapter vraagt de gegevens aan de oude api
+
+Stap 5. De oude Booking.com api geeft informatie terug
+
+Stap 6. TransformDataToOutput krijgt data volgens de bekende standaard binnen en hoeft de informatie niet te vertalen.
+
+Stap 7. Deze data gaat terug naar TripService
+
+Stap 8. De data wordt in de 'Applicatie weergegeven'
+
+Stap 9. **Customer** krijgt de informatie te zien op zijn scherm
+
+
+##### Start (Nieuwe API)
+###### Nummering is apart door dubbele sequence diagram
+
+Stap 1. **Customer** Start de 'Applicatie'
+
+Stap 10. De applicatie haalt accommodatiegegevens op via de Nieuwe API
+
+Stap 11. TripService vraagt om de gegevens aan de Adapter
+
+Stap 12. De adapter vraagt de gegevens aan de nieuwe api
+
+Stap 13. De nieuwe Booking.com api geeft informatie teru
+
+Stap 14. TransformDataToOutput krijgt data volgens een bekende maar verkeerde standaard binnen en vertaalt de informatie naar iets waar TripService iets mee kan
+
+Stap 15. Deze data gaat terug naar TripService
+
+Stap 16. De data wordt in de 'Applicatie weergegeven'
+
+Stap 17. **Customer** krijgt de informatie te zien op zijn scherm
+
 
 
 ## 8. Architectural Decision Records

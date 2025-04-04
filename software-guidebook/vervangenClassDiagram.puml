@@ -1,5 +1,7 @@
 @startuml
 
+'Main not included'
+
 class TripService {
     +void requestAvailability()
 }
@@ -17,17 +19,17 @@ class ExternalAccommodationAdapter {
     +void transformDataToOutput()
 }
 
-class OldAPI {
+class OldBookingReviewAPI {
     +void externalRequest()
 }
 
-class NewAPI {
+class NewBookingReviewAPI {
     +void externalRequest()
 }
 
 TripService --> ExternalAccommodationAdapter : requests availability
-ExternalAccommodationAdapter --> OldAPI : queries if useOldAPI is true
-ExternalAccommodationAdapter --> NewAPI : queries if useOldAPI is false
+ExternalAccommodationAdapter --> OldBookingReviewAPI : queries if useOldAPI is true
+ExternalAccommodationAdapter --> NewBookingReviewAPI : queries if useOldAPI is false
 ServiceAdapter <|.. ExternalAccommodationAdapter
 
 @enduml
