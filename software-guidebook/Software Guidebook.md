@@ -142,22 +142,13 @@ Caching garandeert dat data beschikbaar blijft, zelfs als de externe service uit
 ![Component Diagram Triptop caching](./images/cachingComponentDiagram.png)
 Dit diagram toont hoe de applicatie gegevens ophaalt en caching toepast bij service-onbeschikbaarheid.
 
-- Eindgebruiker → Vraagt gegevens op via de API Gateway. 
+- Eindgebruiker → Vraagt gegevens op via de API-Gateway. 
 - Data Service → Bepaalt via de Strategy Selector of data direct wordt opgehaald of uit de cache komt. 
 - Service Client → Haalt data op bij de Externe Service als deze beschikbaar is. 
 - Cache Manager → Gebruikt de Cache Database (MongoDB) als back-up bij service-uitval. 
 - Monitoring Service → Houdt beschikbaarheid en cache-efficiëntie bij.
 
-> [!IMPORTANT]
-frontend redux store moeten in slices
-
 ###     7.3. Design & Code
-
-> [!IMPORTANT]
-> Voeg toe: Per ontwerpvraag een Class Diagram plus een Sequence Diagram van een aantal scenario's inclusief begeleidende tekst.
-
-> [!IMPORTANT]
-Maak van de DB class een facade.
 
 ### Hoe zorg je dat een wijziging in een of meerdere APIs niet leidt tot een grote wijziging in de applicatie? 
 

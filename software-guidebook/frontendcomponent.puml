@@ -9,14 +9,20 @@ title Dynamisch Container diagram voor Triptop Reis Frontend
 Person(reiziger, "Reiziger", "Eindgebruiker die de frontend interacties doorloopt")
 
 System_Boundary(frontendSysteem, "Frontend Applicatie") {
-    Container(searchComponent, "Zoek Component", "?", "Verzorgt zoeken en filteren van reizen")
-    Container(authComponent, "Authenticatie Component", "?", "Beheert gebruikersregistratie en login")
-    Container(bookingFlowComponent, "Boekingsstroom Component", "?", "Begeleidt gebruiker door boekingsproces")
-    Container(paymentComponent, "Betaal Component", "?", "Verwerkt betalingsselectie en -afhandeling")
-    Container(reviewComponent, "Review Component", "?", "Toont samenvatting en bevestiging")
+    Container(searchComponent, "Zoek Component", "JavaScript", "Verzorgt zoeken en filteren van reizen")
+    Container(authComponent, "Authenticatie Component", "JavaScript", "Beheert gebruikersregistratie en login")
+    Container(bookingFlowComponent, "Boekingsstroom Component", "JavaScript", "Begeleidt gebruiker door boekingsproces")
+    Container(paymentComponent, "Betaal Component", "JavaScript", "Verwerkt betalingsselectie en -afhandeling")
+    Container(reviewComponent, "Review Component", "JavaScript", "Toont samenvatting en bevestiging")
 
-    Container(stateManagement, "Redux Store", "State Management", "Centraliseert applicatie-state")
-    Container(apiService, "API Service", "?", "Verzorgt communicatie met backend")
+    Container_Boundary(reduxStore, "Redux Store") {
+        Container(searchSlice, "Search Slice", "Redux", "Beheert de zoekresultaten in de state")
+        Container(authSlice, "Auth Slice", "Redux", "Beheert gebruikersgegevens en authenticatie")
+        Container(bookingSlice, "Booking Slice", "Redux", "Beheert de boekingsstatus en -gegevens")
+        Container(paymentSlice, "Payment Slice", "Redux", "Beheert betalingsgegevens en status")
+    }
+
+    Container(apiService, "API Service", "JavaScript", "Verzorgt communicatie met backend")
 }
 
 System_Ext(backendGateway, "Backend API Gateway", "Ontvangt frontend verzoeken")
@@ -26,22 +32,24 @@ RelIndex(1, reiziger, searchComponent, "Start reiszoektocht", "Gebruikersinterac
 RelIndex(2, searchComponent, apiService, "Vraagt beschikbare reizen", "JSON/HTTPS")
 RelIndex(3, apiService, backendGateway, "Verzendt zoekverzoek", "JSON/HTTPS")
 
-RelIndex(4, searchComponent, stateManagement, "Slaat zoekresultaten op", "State Update")
+RelIndex(4, searchComponent, searchSlice, "Slaat zoekresultaten op", "State Update")
 RelIndex(5, reiziger, bookingFlowComponent, "Selecteert reis", "Gebruikersinteractie")
 
-RelIndex(6, bookingFlowComponent, stateManagement, "Werkt reisdetails bij", "State Update")
+RelIndex(6, bookingFlowComponent, bookingSlice, "Werkt reisdetails bij", "State Update")
 RelIndex(7, bookingFlowComponent, apiService, "Valideert reisonderdelen", "JSON/HTTPS")
 
 RelIndex(8, reiziger, authComponent, "Authenticatie", "Gebruikersinteractie")
 RelIndex(9, authComponent, apiService, "Verificatie credentials", "JSON/HTTPS")
+RelIndex(10, authComponent, authSlice, "Slaat gebruikersstatus op", "State Update")
 
-RelIndex(10, reiziger, paymentComponent, "Start betaalproces", "Gebruikersinteractie")
-RelIndex(11, paymentComponent, apiService, "Verzendt betalingsverzoek", "JSON/HTTPS")
+RelIndex(11, reiziger, paymentComponent, "Start betaalproces", "Gebruikersinteractie")
+RelIndex(12, paymentComponent, apiService, "Verzendt betalingsverzoek", "JSON/HTTPS")
+RelIndex(13, paymentComponent, paymentSlice, "Werkt betalingsstatus bij", "State Update")
 
-RelIndex(12, reviewComponent, stateManagement, "Haalt reisdetails op", "State Query")
-RelIndex(13, reiziger, reviewComponent, "Controleert boeking", "Gebruikersinteractie")
+RelIndex(14, reviewComponent, bookingSlice, "Haalt reisdetails op", "State Query")
+RelIndex(15, reiziger, reviewComponent, "Controleert boeking", "Gebruikersinteractie")
 
-RelIndex(14, reviewComponent, apiService, "Bevestigt boeking", "JSON/HTTPS")
-RelIndex(15, reiziger, reviewComponent, "Ontvangt boekingsbevestiging", "UI Feedback")
+RelIndex(16, reviewComponent, apiService, "Bevestigt boeking", "JSON/HTTPS")
+RelIndex(17, reiziger, reviewComponent, "Ontvangt boekingsbevestiging", "UI Feedback")
 
 @enduml
