@@ -1,0 +1,35 @@
+@startuml
+
+autonumber
+
+actor User
+participant Main
+participant TripService
+participant ExternalAccommodationAdapter
+participant OldBookingReviewAPI
+participant NewBookingReviewAPI
+
+== Oude API ==
+
+User -> Main: start application
+Main -> TripService: requestAvailability (Old API)
+TripService -> ExternalAccommodationAdapter: request()
+ExternalAccommodationAdapter -> OldBookingReviewAPI: externalRequest()
+OldBookingReviewAPI --> ExternalAccommodationAdapter: JSON response
+ExternalAccommodationAdapter -> ExternalAccommodationAdapter: transformDataToOutput(json, true)
+ExternalAccommodationAdapter --> TripService: Transformed Data
+TripService --> Main: Response received
+Main --> User: Display response
+
+== Nieuwe API ==
+
+Main -> TripService: requestAvailability (New API)
+TripService -> ExternalAccommodationAdapter: request()
+ExternalAccommodationAdapter -> NewBookingReviewAPI: externalRequest()
+NewBookingReviewAPI --> ExternalAccommodationAdapter: JSON response
+ExternalAccommodationAdapter -> ExternalAccommodationAdapter: transformDataToOutput(json, false)
+ExternalAccommodationAdapter --> TripService: Transformed Data
+TripService --> Main: Response received
+Main --> User: Display response
+
+@enduml

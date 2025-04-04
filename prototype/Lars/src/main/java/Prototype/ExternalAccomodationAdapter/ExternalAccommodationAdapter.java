@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
+//You have to run this prototype from main
+
 @Service
 public class ExternalAccommodationAdapter implements ServiceAdapter {
     private final OldBookingReviewAPI oldBookingReviewAPI;

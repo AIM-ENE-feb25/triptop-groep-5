@@ -9,7 +9,7 @@ public class OldBookingReviewAPI {
 
     public String externalRequest() {
         try {
-            // Mock // couldn't actually fint an old api so made one up based on the new api
+            // Mock // couldn't actually find an old api so made one up based on the new api
             Map<String, Object> reviewer = new HashMap<>();
             reviewer.put("name", "Steve Oldapi");
             reviewer.put("country", "ch");
