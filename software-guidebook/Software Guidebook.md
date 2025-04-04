@@ -128,11 +128,9 @@ Het pattern Adapter sluit perfect aan bij _Encapsulate what varies_ door die afs
 Dit diagram toont de interactie tussen de webapplicatie, API Gateway, backend service en externe services voor het betalen van een reis. Het laat ook zien hoe de applicatie omgaat met verschillende betalingssystemen.
 
 - Reiziger → Vraagt gegevens op via de Web Applicatie (Angular)
-- Web applicatie -> verstuurt verzoeken naar Spring Boot webapp (HTTP)
-- Spring boot webapp -> Verstuurt verzoeken door naar de controller.
+- Web applicatie -> verstuurt verzoeken naar BetaalController (HTTP)
 - Betaalcontroller -> Verwerkt verzoeken en roept de juiste adapter aan.
 - BetaalStrategyFactory -> Maakt de juiste adapter aan op basis van de gekozen betaalmethode.
-![Container Diagram Triptop betaalsystemen]
 
 #### Vervangen externe API
 ![Container Diagram Triptop API Vervangen](./images/VervangenContainerDiagram.png)
