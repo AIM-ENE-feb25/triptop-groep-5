@@ -97,6 +97,17 @@ In de context van de ADR bij deze vraag:
 
 - De basisarchitectuur blijft ongewijzigd omdat uitbreiding plaatsvindt door toevoeging van losse strategieklassen.
 
+#### Hoe zorg je dat een wijziging in een of meerdere APIs niet leidt tot een grote wijziging in de applicatie? Specifieker: hoe zorg je ervoor dat een wijziging in de API van een externe service niet leidt tot een wijziging in de front-end maar flexibel kan worden opgevangen door de back-end?
+
+_Encapsulate what varies_ is het best passende design principle voor deze vraag.
+Door een adapter te gebruiken die eventuele veranderingen kan opvangen scherm ik het programma zelf effectief af van eventuele externe veranderingen.
+Eventueel met een verdere uitwerking dan ik hier gedaan heb, zou je zelfs een 2e service kunnen aansluiten die als fallback gebruikt kan worden mocht de huidige wegvallen. Maar dat is buiten de scope van deze opdracht
+
+Het idee achter _encapsulate what varies_ is het afschermen van delen van code die vaak veranderen van de rest van je code (de delen die (grotendeels) hetzelfde blijven).
+In dit geval hoef je in principe alleen de adapter aan te passen als er een grote verandering is van buitenaf.
+
+Het pattern Adapter sluit perfect aan bij _Encapsulate what varies_ door die afscherming te zijn voor het hoofdprogramma
+ waarin de aanpassingen kunnen worden gedaan en eventuele onverwachtheden in kunnen worden opgevangen.
 ## 7. Software Architecture
 
 ###     7.1. Containers
@@ -113,6 +124,7 @@ In de context van de ADR bij deze vraag:
 ![Container Diagram Triptop inlog](images/logincontainerdiagram.png)
 
 ![Container Diagram Triptop betaalsystemen]
+![Container Diagram Triptop API Vervangen](./images/VervangenContainerDiagram.png)
 
 #### Caching
 ![Container Diagram Triptop caching](images/cachingContainerDiagram.png)
@@ -150,6 +162,11 @@ Dit diagram toont hoe de applicatie gegevens ophaalt en caching toepast bij serv
 
 ###     7.3. Design & Code
 
+> [!IMPORTANT]
+> Voeg toe: Per ontwerpvraag een Class Diagram plus een Sequence Diagram van een aantal scenario's inclusief begeleidende tekst.
+
+Maak van de DB class een facade.
+
 ### Hoe zorg je dat een wijziging in een of meerdere APIs niet leidt tot een grote wijziging in de applicatie? 
 
 De adapter is zo geschreven dat hij de data die van een externe service afkomt eerst vergelijkt mat wat
@@ -184,9 +201,9 @@ In de context van de ADR zou je een interface kunnen maken voor het ophalen van 
 dynamisch wisselen tussen deze strategieën, afhankelijk van de beschikbaarheid van de externe services.
 
 #### Class Diagram
-![Class diagram caching](images/ClassdiagramCaching.png)
+![Class diagram caching](./images/ClassdiagramCaching.png)
 
-Key components van dit diagram:
+Key components van deze diagram:
 1. `DataFetchStrategy` Interface: Dit is de kern van het Strategy Pattern. Het definieert een gemeenschappelijke interface voor alle strategieën om data op te halen, met de methode ```fetchData()```.
 2. Concrete strategieën:
 - `DirectServiceStrategy`: Haalt gegevens rechtstreeks op via de externe service wanneer deze beschikbaar is.
@@ -602,6 +619,99 @@ We kiezen voor **Strategy** in combinatie met **Factory** als design pattern voo
 - Het onderhouden van meerdere betaalmethoden kan complexiteit toevoegen aan de applicatie.
 - Iets meer code-infrastructuur nodig: extra klassen per betaalmethode en een factory.
 - Factory is gevoelig voor typfouten (bijv. "paypal" vs "PayPal") tenzij er met enum of mapping gewerkt wordt.
+
+## 8.8 ADR: Interactie met verouderde externe API's
+
+###### Datum: 2025-03-31
+
+## Status
+Geaccepteerd
+
+## Context
+Wij zijn de volgende onderzoeksvraag tegengekomen: Hoe beheer je veilig de interactie met verouderde externe APIs die geen moderne beveiligingsprotocollen ondersteunen?
+
+In deze ADR onderzoeken wij meerdere potentiële oplossingen voor dit probleem en kiezen wij de meest passende oplossing.
+
+## Considered Options
+
+
+### Vervangen:
+Het vervangen van de verouderde API door een API die wél moderne beveiligingsprotocollen ondersteunt. Dit zal niet altijd een optie kunnen zijn, aangezien wij niet kunnen garanderen dat er daadwerkelijk een up-to-date API beschikbaar zal zijn.
+
+#### Voordelen:
+- Hoogste veiligheidsgraad, ondersteuning voor moderne encryptie en authenticatie.
+- Betrouwbaar, geen afhankelijkheid van tussenlagen of 'tijdelijke oplossingen'.
+- **De juiste manier**, Lost het probleem op in plaats van het te omzeilen.
+
+#### Nadelen:
+- Lastig te implementeren, of herschrijven of migreren naar nieuwe API.
+- Langdurige implementatie
+
+
+### API Gateway Security Wrappers:
+Is een 'tussenpersoon' die de communicatie met de API afhandelt en zelf wél beveiligingsprotocollen kan gebruiken.
+
+#### Voordelen:
+- Ondersteunt encryptie.
+- Ondersteunt Authenticatie.
+- Beschermt tegen aanvallen
+- Geen aanpassingen aan de API nodig (sneller en makkelijker te implementeren dan de API vervangen)
+
+#### Nadelen:
+- Voegt een extra laag toe, heeft bijna gegarandeerd een prestatie impact.
+- Voegt onderhoud toe
+- Pakt het probleem zelf niet aan, maar omzeilt het.
+
+### VPN/Tunneling:
+Hiermee gaat het verkeer door een versleutelde verbinding. De API zelf blijft onveilig, maar de communicatie ermee is versleuteld en alleen toegankelijk voor vertrouwde apparaten.
+
+#### Voordelen:
+- Verbergt API-verkeer
+- Geen aanpassingen aan de API nodig (snel en makkelijk te implementeren)
+- Beperkt toegang tot vertrouwde apparaten
+
+#### Nadelen:
+- Voegt een extra stap toe, heeft bijna gegarandeerd een prestatie impact.
+- Geen bescherming tegen injectie-aanvallen (elders af te vangen)
+- Pakt het probleem zelf niet aan, maar omzeilt het.
+- Minder schaalbaar
+
+
+
+| Opties                  | Vervanging | API Gateway Security Wrappers | VPN/Tunneling |
+|-------------------------|------------|-------------------------------|---------------|
+| Veiligheid              | ++         | +                             | 0             |
+| Gemak van implementatie | -          | 0                             | +             |
+| 'future proofing'*      | ++         | +                             | 0             |
+| Kosten                  | -          | 0                             | +             |
+| Onderhoud               | 0          | -                             | +             |
+| Schaalbaarheid          | 0          | -                             | -             |
+|                         |            |                               |               |
+| Totale score            | 2          | 1                             | 2             |
+
+
+###### *In hoeverre is dit een 'permanente' oplossing?
+
+
+## Decision
+
+Er komen uit de afweging 2 opties _Vpn/tunneling_ en _Vervanging_, beide scoren even hoog dus hak ik hier de knoop door en kies ik _Vervanging_ omdat schaalbaarheid voor de opdrachtgever belangrijk is.
+Met deze keuze zijn we meer tijd kwijt met implementatie en zal het team proactief moeten zijn met het implementeren van nieuwe api's wanneer deze worden uitgebracht.
+Dit gaat ons echter wel de beste prestaties, veiligheid en schaalbaarheid bieden omdat er geen tussenstappen of omwegen worden gebruikt.
+
+
+## Consequences
+
+### Voordelen
+- Veilig
+- Snel
+- Schaalbaar
+- Lage problematiek later omdat er geen complexiteit wordt toegevoegd aan het systeem (geen ophoping aan 'tijdelijke oplossingen')
+
+### Nadelen
+- Lange implementatietijd en kosten
+- proactief werk nodig
+
 
 ## 9. Deployment, Operation and Support
 
